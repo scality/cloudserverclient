@@ -1,0 +1,16 @@
+{
+    "version": "1.0",
+    "sources": ["models", "service"],
+    "maven": {
+        "dependencies": [
+            "software.amazon.smithy:smithy-aws-traits:1.61.0",
+            "software.amazon.smithy.typescript:smithy-aws-typescript-codegen:0.34.0"
+        ]
+    },
+    "plugins": {
+        "typescript-codegen": {
+            "package": "@scality/cloudserverclient",
+            "packageVersion": "1.0.0"
+        }
+    }
+}
