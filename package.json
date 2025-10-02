@@ -1,0 +1,20 @@
+{
+  "name": "@scality/cloudserverclient",
+  "version": "1.0.0",
+  "engines": {
+    "node": ">=20"
+  },
+  "description": "Smithy-generated TypeScript client for Cloudserver's internal APIs",
+  "main": "build/smithy/source/typescript-codegen/dist-cjs/index.js", 
+  "types": "build/smithy/source/typescript-codegen/dist-types/index.d.ts",
+  "module": "build/smithy/source/typescript-codegen/dist-es/index.js",
+  "scripts": {
+    "build": "rm -rf build && smithy build && cd build/smithy/source/typescript-codegen && yarn install && yarn build"
+  },
+  "author": "Scality",
+  "license": "SEE LICENSE IN FILE LICENSE",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/scality/cloudserverclient.git"
+  }
+}
