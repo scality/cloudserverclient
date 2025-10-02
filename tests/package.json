@@ -1,0 +1,23 @@
+{
+  "name": "test-client-isolated",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage",
+    "test:verbose": "jest --verbose",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@aws-sdk/client-s3": "^3.896.0",
+    "@scality/cloudserverclient": "file:../build/smithy/source/typescript-codegen",
+    "JSONStream": "^1.3.5"
+  },
+  "devDependencies": {
+    "@types/jest": "^30.0.0",
+    "jest": "^30.2.0",
+    "ts-jest": "^29.4.4",
+    "typescript": "^5.7.3"
+  }
+}
