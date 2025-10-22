@@ -5,11 +5,25 @@
     "node": ">=20"
   },
   "description": "Smithy-generated TypeScript client for Cloudserver's internal APIs",
-  "main": "build/smithy/source/typescript-codegen/dist-cjs/index.js", 
-  "types": "build/smithy/source/typescript-codegen/dist-types/index.d.ts",
-  "module": "build/smithy/source/typescript-codegen/dist-es/index.js",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist",
+    "build/smithy/source/typescript-codegen",
+    "build/smithy/source/typescript-codegen/lib"
+  ],
   "scripts": {
-    "build": "rm -rf build && smithy build && cd build/smithy/source/typescript-codegen && yarn install && yarn build"
+    "clean:build": "rm -rf build dist",
+    "build:smithy": "smithy build",
+    "build:generated": "cd build/smithy/source/typescript-codegen && yarn install && yarn build",
+    "build:wrapper": "tsc",
+    "build": "yarn install && yarn clean:build && yarn build:smithy && yarn build:generated && yarn build:wrapper"
+  },
+  "devDependencies": {
+    "typescript": "^5.0.0"
+  },
+  "dependencies": {
+    "fast-xml-parser": "^4.3.2"
   },
   "author": "Scality",
   "license": "SEE LICENSE IN FILE LICENSE",
