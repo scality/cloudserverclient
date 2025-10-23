@@ -3,9 +3,9 @@ import {
     CloudserverClient as GeneratedCloudserverClient, 
     CloudserverClientConfig,
     CloudserverServiceException 
-} from '@scality/cloudserverclient-generated';
+} from './build/smithy/source/typescript-codegen';
 
-export * from '@scality/cloudserverclient-generated';
+export * from './build/smithy/source/typescript-codegen';
 export class CloudserverClient extends GeneratedCloudserverClient {
     constructor(config: CloudserverClientConfig) {
         super(config);
