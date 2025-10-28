@@ -44,7 +44,7 @@ describe('CloudServer API Tests', () => {
         }
     });
 
-    it('should test GetObject', async () => {
+    it('should test GetSingleObject', async () => {
         try {
             const getInput: GetObjectInput = {
                 Bucket: testConfig.bucketName,
