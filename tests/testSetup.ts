@@ -1,5 +1,5 @@
 import https from 'https';
-import { CloudserverClient, CloudserverClientConfig } from '@scality/cloudserverclient';
+import { CloudserverClient, CloudserverClientConfig } from '../src/index';
 import { S3Client, PutObjectCommand, CreateBucketCommand, PutBucketVersioningCommand } from '@aws-sdk/client-s3';
 
 jest.setTimeout(30000);

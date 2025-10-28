@@ -8,7 +8,7 @@ import {
     GetRaftLogCommand,
     GetBucketCseqInput,
     GetBucketCseqCommand
-} from '@scality/cloudserverclient';
+} from '../src/index';
 import { createTestClient, testConfig } from './testSetup';
 const stream = require('stream');
 const JSONStream = require('JSONStream');

@@ -9,7 +9,7 @@ import {
     BatchDeleteLocation,
     BatchDeleteInput,
     BatchDeleteCommand
-} from '@scality/cloudserverclient';
+} from '../src/index';
 import { Readable } from 'stream';
 import { createTestClient, testConfig } from './testSetup';
 const crypto = require('crypto');

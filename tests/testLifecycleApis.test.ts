@@ -8,7 +8,7 @@ import {
     ListLifecycleOrphansCommand,
     DeleteObjectFromExpirationInput,
     DeleteObjectFromExpirationCommand,
-} from '@scality/cloudserverclient';
+} from '../src/index';
 import { createTestClient, testConfig } from './testSetup';
 
 describe('CloudServer Lifecycle API Tests', () => {

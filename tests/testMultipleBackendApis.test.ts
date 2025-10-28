@@ -18,7 +18,7 @@ import {
     MultipleBackendDeleteObjectTaggingCommand,
     GetObjectInput,
     GetObjectCommand,
-} from '@scality/cloudserverclient';
+} from '../src/index';
 import { createTestClient, testConfig } from './testSetup';
 const crypto = require('crypto');
 

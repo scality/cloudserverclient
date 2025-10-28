@@ -6,7 +6,7 @@ import {
     PutBucketIndexesCommand,
     DeleteBucketIndexesInput,
     DeleteBucketIndexesCommand,
-} from '@scality/cloudserverclient';
+} from '../src/index';
 import { createTestClient, testConfig } from './testSetup';
 
 describe('CloudServer Indexes API Tests', () => {

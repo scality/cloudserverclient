@@ -6,11 +6,10 @@
   },
   "description": "Smithy-generated TypeScript client for Cloudserver's internal APIs",
   "main": "dist/index.js",
-  "types": "dist/index.d.ts",
+  "types": "dist/index.d.ts", 
   "files": [
     "dist",
-    "build/smithy/source/typescript-codegen",
-    "build/smithy/source/typescript-codegen/lib"
+    "build/smithy/source/typescript-codegen"
   ],
   "scripts": {
     "clean:build": "rm -rf build dist",
@@ -21,7 +20,7 @@
     "test": "jest"
   },
   "devDependencies": {
-    "typescript": "^5.0.0",
+    "typescript": "^5.7.3",
     "@types/jest": "^30.0.0",
     "jest": "^30.2.0",
     "ts-jest": "^29.4.4"

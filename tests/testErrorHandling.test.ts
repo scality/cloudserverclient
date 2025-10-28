@@ -4,7 +4,7 @@ import {
     MultipleBackendDeleteObjectCommand,
     GetObjectInput,
     GetObjectCommand,
-} from '@scality/cloudserverclient';
+} from '../src/index';
 import { createTestClient, testConfig } from './testSetup';
 
 describe('CloudServer test error handling', () => {

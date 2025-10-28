@@ -11,16 +11,13 @@
     "moduleResolution": "node",
     "resolveJsonModule": true,
     "declaration": true,
-    "baseUrl": ".",
-    "paths": {
-      "@scality/cloudserverclient": ["./src/index.ts"]
-    }
+    "baseUrl": "."
   },
   "include": [
-    "src/**/*",
-    "tests/**/*"
+    "src/**/*"
   ],
   "exclude": [
+    "tests/**/*",
     "node_modules",
     "build",
     "dist"
