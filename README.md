@@ -16,11 +16,11 @@ yarn build
 
 ### Local testing
 
-1. Install test dependencies: `cd localTests && yarn install`
+1. Install dependencies & build the smithy client: `yarn build`
 2. Start CloudServer: `S3VAULT=mem S3METADATA=mem S3DATA=mem REMOTE_MANAGEMENT_DISABLE=true yarn start`
 Some tests require different cloudserver setup :
-For example : testIndexes : `S3METADATA=mongodb`
-You may change the credentials and endpoint in testSetup.ts to target your Artesca lab.
+For example : tests/testIndexesApis.test.ts : `S3METADATA=mongodb`
+You may change the credentials and endpoint in `tests.testSetup.ts` to target your Artesca lab.
 Others (Raft apis) need Metadata to run :
 In cloudserver, you can start metadata-standalone from
 .github/docker/docker-compose.sse.yaml :

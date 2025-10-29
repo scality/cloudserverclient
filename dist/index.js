@@ -62,10 +62,8 @@ class CloudserverClient extends typescript_codegen_1.CloudserverClient {
                         xmlError.parsedXml = errorInfo;
                         throw xmlError;
                     }
-                    // S3C has an nginx proxy that can return HTML error responses
-                    // For example a 400 Request Header Or Cookie Too Large
-                    // That would be converted to UnknownError: BadRequest
-                    if (contentType.includes('text/html')) {
+                    const s3cNginxProxyResponse = contentType.includes('text/html');
+                    if (s3cNginxProxyResponse) {
                         const body = response?.body;
                         const html = body?.toString() || '';
                         const title = html.match(/<title[^>]*>([^<]+)<\/title>/i);
