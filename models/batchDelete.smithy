@@ -35,10 +35,8 @@ list BatchDeleteLocationList {
 
 structure BatchDeleteLocation {
     /// The data store name where the object is stored
-    @required
     dataStoreName: String,
     /// The storage key for the object
-    @required
     key: String,
     /// Size of the object in bytes
     size: Integer,

@@ -11,6 +11,7 @@ structure PutBucketIndexesInput {
     @httpLabel
     @required
     Bucket: String,
+    
     @httpHeader("X-Scal-Request-Uids")
     RequestUids: String,
     

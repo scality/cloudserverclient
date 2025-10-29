@@ -42,12 +42,12 @@ export interface BatchDeleteLocation {
      * The data store name where the object is stored
      * @public
      */
-    dataStoreName: string | undefined;
+    dataStoreName?: string | undefined;
     /**
      * The storage key for the object
      * @public
      */
-    key: string | undefined;
+    key?: string | undefined;
     /**
      * Size of the object in bytes
      * @public
@@ -1088,7 +1088,7 @@ export interface MultipleBackendPutObjectInput {
      * Streaming blob for large data responses
      * @public
      */
-    Body: StreamingBlobTypes | undefined;
+    Body?: StreamingBlobTypes | undefined;
 }
 /**
  * @internal
@@ -1162,7 +1162,7 @@ export interface PutDataInput {
      * Streaming blob for large data responses
      * @public
      */
-    Body: StreamingBlobTypes | undefined;
+    Body?: StreamingBlobTypes | undefined;
 }
 /**
  * @internal

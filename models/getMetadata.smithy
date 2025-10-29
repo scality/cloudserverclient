@@ -19,6 +19,7 @@ structure GetMetadataInput {
     
     @httpQuery("versionId")
     VersionId: String,
+    
     @httpHeader("X-Scal-Request-Uids")
     RequestUids: String
 }

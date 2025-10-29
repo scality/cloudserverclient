@@ -11,6 +11,7 @@ structure DeleteBucketIndexesInput {
     @required
     @httpLabel
     Bucket: String,
+    
     @httpHeader("X-Scal-Request-Uids")
     RequestUids: String,
     

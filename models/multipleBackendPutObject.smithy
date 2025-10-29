@@ -44,7 +44,7 @@ structure MultipleBackendPutObjectInput {
     @httpHeader("X-Scal-Request-Uids")
     RequestUids: String,
     @httpPayload
-    @required
+    @default("")
     Body: StreamingBlob
 }
 

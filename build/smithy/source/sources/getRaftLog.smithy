@@ -23,6 +23,7 @@ structure GetRaftLogInput {
     
     @httpQuery("targetLeader")
     TargetLeader: Boolean,
+    
     @httpHeader("X-Scal-Request-Uids")
     RequestUids: String,
 }

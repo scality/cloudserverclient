@@ -31,6 +31,7 @@ structure PutMetadataInput {
     
     @httpHeader("x-scal-versioning-required")
     VersioningRequired: Boolean,
+    
     @httpHeader("X-Scal-Request-Uids")
     RequestUids: String,
     

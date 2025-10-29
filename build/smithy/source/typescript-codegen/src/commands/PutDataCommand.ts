@@ -33,7 +33,7 @@ export { $Command };
  * The input for {@link PutDataCommand}.
  */
 export interface PutDataCommandInput extends Omit<PutDataInput, "Body"> {
-    Body: StreamingBlobPayloadInputTypes;
+    Body?: StreamingBlobPayloadInputTypes;
 }
 
 /**
@@ -59,7 +59,7 @@ export interface PutDataCommandOutput extends PutDataOutput, __MetadataBearer {}
  *   CanonicalID: "STRING_VALUE",
  *   VersioningRequired: true || false,
  *   RequestUids: "STRING_VALUE",
- *   Body: "MULTIPLE_TYPES_ACCEPTED", // see \@smithy/types -> StreamingBlobPayloadInputTypes // required
+ *   Body: "MULTIPLE_TYPES_ACCEPTED", // see \@smithy/types -> StreamingBlobPayloadInputTypes
  * };
  * const command = new PutDataCommand(input);
  * const response = await client.send(command);

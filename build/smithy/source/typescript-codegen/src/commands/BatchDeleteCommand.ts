@@ -55,8 +55,8 @@ export interface BatchDeleteCommandOutput extends BatchDeleteOutput, __MetadataB
  *   RequestUids: "STRING_VALUE",
  *   Locations: [ // BatchDeleteLocationList
  *     { // BatchDeleteLocation
- *       dataStoreName: "STRING_VALUE", // required
- *       key: "STRING_VALUE", // required
+ *       dataStoreName: "STRING_VALUE",
+ *       key: "STRING_VALUE",
  *       size: Number("int"),
  *       dataStoreVersionId: "STRING_VALUE",
  *     },

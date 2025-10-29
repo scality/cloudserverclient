@@ -13,7 +13,7 @@ export { $Command };
  * The input for {@link MultipleBackendPutObjectCommand}.
  */
 export interface MultipleBackendPutObjectCommandInput extends Omit<MultipleBackendPutObjectInput, "Body"> {
-    Body: StreamingBlobPayloadInputTypes;
+    Body?: StreamingBlobPayloadInputTypes;
 }
 /**
  * @public
@@ -51,7 +51,7 @@ declare const MultipleBackendPutObjectCommand_base: {
  *   VersionId: "STRING_VALUE",
  *   Tags: "STRING_VALUE",
  *   RequestUids: "STRING_VALUE",
- *   Body: "MULTIPLE_TYPES_ACCEPTED", // see \@smithy/types -> StreamingBlobPayloadInputTypes // required
+ *   Body: "MULTIPLE_TYPES_ACCEPTED", // see \@smithy/types -> StreamingBlobPayloadInputTypes
  * };
  * const command = new MultipleBackendPutObjectCommand(input);
  * const response = await client.send(command);
