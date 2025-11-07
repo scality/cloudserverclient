@@ -1,15 +1,19 @@
 import https from 'https';
 import { CloudserverClient, CloudserverClientConfig } from '../src/index';
 import { S3Client, PutObjectCommand, CreateBucketCommand, PutBucketVersioningCommand } from '@aws-sdk/client-s3';
+import { AwsCredentialIdentity, AwsCredentialIdentityProvider } from '@aws-sdk/types';
 
 jest.setTimeout(30000);
 
+const credentialsProvider: AwsCredentialIdentityProvider = async (): Promise<AwsCredentialIdentity> => ({
+    accessKeyId: 'accessKey1',
+    secretAccessKey: 'verySecretKey1',
+    sessionToken: '',
+});
+
 const config: CloudserverClientConfig = {
     endpoint: 'http://localhost:8000',
-    credentials: {
-        accessKeyId: 'accessKey1',
-        secretAccessKey: 'verySecretKey1',
-    },
+    credentials: credentialsProvider,
     region: 'us-east-1',
     maxAttempts: 1,
     requestHandler: {
@@ -41,7 +45,8 @@ async function initBucketForTests() {
             httpsAgent: new https.Agent({
                 rejectUnauthorized: false
             })
-        } 
+        },
+        maxAttempts: 1
     });
 
     try {

@@ -121,7 +121,6 @@ describe('CloudServer Raft API Tests', () => {
                     logRes.log.on('data', (record: any) => {
                         logStats.nbLogRecordsRead += 1;
                         console.log(`Processing log record ${logStats.nbLogRecordsRead}:`, record);
-                        
                         if (record.entries) {
                             record.entries.forEach((entry: any) => {
                                 logStats.nbLogEntriesRead += 1;

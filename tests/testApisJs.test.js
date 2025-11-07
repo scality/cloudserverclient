@@ -1,5 +1,6 @@
-const { GetObjectCommand } = require('@scality/cloudserverclient');
+// const { GetObjectCommand } = require('@scality/cloudserverclient');
 const { createTestClient, testConfig } = require('./testSetup');
+const { S3Client, GetObjectCommand,  PutObjectCommand, CreateBucketCommand, PutBucketVersioningCommand } = require('@aws-sdk/client-s3');
 
 describe('CloudServer JavaScript API Tests', () => {
     let client;
