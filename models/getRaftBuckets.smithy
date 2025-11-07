@@ -14,6 +14,7 @@ structure GetRaftBucketsInput {
     @httpLabel
     @required
     LogId: String,
+
     @httpHeader("X-Scal-Request-Uids")
     RequestUids: String,
 }

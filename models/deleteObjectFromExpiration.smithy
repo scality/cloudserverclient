@@ -19,6 +19,7 @@ structure DeleteObjectFromExpirationInput {
     
     @httpQuery("versionId")
     VersionId: String,
+
     @httpHeader("X-Scal-Request-Uids")
     RequestUids: String
 }

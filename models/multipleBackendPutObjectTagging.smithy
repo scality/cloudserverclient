@@ -39,6 +39,7 @@ structure MultipleBackendPutObjectTaggingInput {
     
     @httpHeader("X-Scal-Replication-Endpoint-Site")
     ReplicationEndpointSite: String,
+
     @httpHeader("X-Scal-Request-Uids")
     RequestUids: String,
     

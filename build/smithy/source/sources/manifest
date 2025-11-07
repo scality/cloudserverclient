@@ -24,5 +24,6 @@ multipleBackendCompleteMPU.smithy
 putdata.smithy
 getObject.smithy
 listLifecycleNonCurrents.smithy
+locationMD.smithy
 deleteBucketIndexes.smithy
 cloudserver.smithy

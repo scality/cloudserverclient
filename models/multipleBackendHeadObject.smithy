@@ -22,6 +22,7 @@ structure MultipleBackendHeadObjectInput {
     @httpHeader("X-Scal-Locations")
     @required
     Locations: String,
+
     @httpHeader("X-Scal-Request-Uids")
     RequestUids: String,
 }

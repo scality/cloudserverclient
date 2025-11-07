@@ -23,6 +23,7 @@ structure MultipleBackendDeleteObjectInput {
     @httpHeader("X-Scal-Storage-Class")
     @required
     StorageClass: String,
+
     @httpHeader("X-Scal-Request-Uids")
     RequestUids: String,
 }
