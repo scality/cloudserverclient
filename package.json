@@ -31,7 +31,7 @@
     "JSONStream": "^1.3.5"
   },
   "author": "Scality",
-  "license": "SEE LICENSE IN FILE LICENSE",
+  "license": "Apache-2.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/scality/cloudserverclient.git"
