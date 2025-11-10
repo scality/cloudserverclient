@@ -2042,7 +2042,8 @@
                 "smithy.api#http": {
                     "method": "POST",
                     "uri": "/_/backbeat/index/{Bucket}?operation=delete"
-                }
+                },
+                "smithy.api#idempotent": {}
             }
         },
         "cloudserver.client#DeleteBucketIndexesInput": {

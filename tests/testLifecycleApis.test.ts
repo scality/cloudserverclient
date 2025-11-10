@@ -9,69 +9,54 @@ import {
     DeleteObjectFromExpirationInput,
     DeleteObjectFromExpirationCommand,
 } from '../src/index';
+import assert from 'assert';
 import { createTestClient, testConfig } from './testSetup';
 
 describe('CloudServer Lifecycle API Tests', () => {
     let client: CloudserverClient;
 
     beforeAll(() => {
-        client = createTestClient();
+        ({client} = createTestClient());
     });
 
     it('should test ListLifecycleCurrents', async () => {
         // Run Cloudserver with : S3VAULT=mem S3METADATA=mongodb S3DATA=mem REMOTE_MANAGEMENT_DISABLE=true yarn start
-        try {
-            const listInput: ListLifecycleCurrentsInput = {
-                Bucket: testConfig.bucketName,
-                MaxKeys: 1,
-            };
-            const command = new ListLifecycleCurrentsCommand(listInput);
-            const result = await client.send(command);
-            console.log('ListLifecycleCurrents succeeded!', result);
-        } catch (err: any) {
-            console.log('ListLifecycleCurrents failed:', err);
-        }
+        const listInput: ListLifecycleCurrentsInput = {
+            Bucket: testConfig.bucketName,
+            MaxKeys: 1,
+        };
+        const command = new ListLifecycleCurrentsCommand(listInput);
+        const result = await client.send(command);
+        assert.strictEqual(result.Contents?.[0].Key, testConfig.objectKey);
     });
 
     it('should test ListLifecycleNonCurrents', async () => {
-        try {
-            const listInput: ListLifecycleNonCurrentsInput = {
-                Bucket: testConfig.bucketName,
-                MaxKeys: 5,
-            };
-            const command = new ListLifecycleNonCurrentsCommand(listInput);
-            const result = await client.send(command);
-            console.log('ListLifecycleNonCurrents succeeded!', result);
-        } catch (err: any) {
-            console.log('ListLifecycleNonCurrents failed:', err);
-        }
+        const listInput: ListLifecycleNonCurrentsInput = {
+            Bucket: testConfig.bucketName,
+            MaxKeys: 5,
+        };
+        const command = new ListLifecycleNonCurrentsCommand(listInput);
+        const result = await client.send(command);
+        assert.strictEqual(result.$metadata.httpStatusCode, 200);
     });
 
     it('should test ListLifecycleOrphans', async () => {
-        try {
-            const listInput: ListLifecycleOrphansInput = {
-                Bucket: testConfig.bucketName,
-                MaxKeys: 5,
-            };
-            const command = new ListLifecycleOrphansCommand(listInput);
-            const result = await client.send(command);
-            console.log('ListLifecycleOrphans succeeded!', result);
-        } catch (err: any) {
-            console.log('ListLifecycleOrphans failed:', err);
-        }
+        const listInput: ListLifecycleOrphansInput = {
+            Bucket: testConfig.bucketName,
+            MaxKeys: 5,
+        };
+        const command = new ListLifecycleOrphansCommand(listInput);
+        const result = await client.send(command);
+        assert.strictEqual(result.$metadata.httpStatusCode, 200);
     });
 
     it('should test DeleteObjectFromExpiration', async () => {
-        try {
-            const deleteInput: DeleteObjectFromExpirationInput = {
-                Bucket: testConfig.bucketName,
-                Key: testConfig.objectKey,
-            };
-            const command = new DeleteObjectFromExpirationCommand(deleteInput);
-            const result = await client.send(command);
-            console.log('DeleteObjectFromExpiration succeeded!', result);
-        } catch (err) {
-            console.log('DeleteObjectFromExpiration failed:', err);
-        }
+        const deleteInput: DeleteObjectFromExpirationInput = {
+            Bucket: testConfig.bucketName,
+            Key: testConfig.objectKey,
+        };
+        const command = new DeleteObjectFromExpirationCommand(deleteInput);
+        const result = await client.send(command);
+        assert.strictEqual(result.$metadata.httpStatusCode, 200);
     });
 });

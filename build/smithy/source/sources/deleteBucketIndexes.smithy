@@ -2,6 +2,7 @@ $version: "2.0"
 namespace cloudserver.client
 
 @http(method: "POST", uri: "/_/backbeat/index/{Bucket}?operation=delete")
+@idempotent
 operation DeleteBucketIndexes {
     input: DeleteBucketIndexesInput,
     output: DeleteBucketIndexesOutput

@@ -5,13 +5,14 @@ import {
     GetObjectInput,
     GetObjectCommand,
 } from '../src/index';
+import assert from 'assert';
 import { createTestClient, testConfig } from './testSetup';
 
 describe('CloudServer test error handling', () => {
     let client: CloudserverClient;
 
     beforeAll(() => {
-        client = createTestClient();
+        ({client} = createTestClient());
     });
 
     it('should test xml parsing', async () => {
@@ -23,13 +24,12 @@ describe('CloudServer test error handling', () => {
                 Key: 'notAKey',
             };
             const getCommand = new GetObjectCommand(getInput);
-            const getData = await client.send(getCommand);
+            await client.send(getCommand);
+            assert.fail('Expected an error but none was thrown');
         } catch (err: any) {
-            console.log('Error:', err);
-            console.log('Error name:', err.name);
-            console.log('Error message:', err.message);
-            console.log('Error code:', err.$metadata?.httpStatusCode);
-            console.log('Error parsedXml:', err.parsedXml);
+            assert.strictEqual(err.name, 'NoSuchKey');            
+            assert.strictEqual(err.message, 'The specified key does not exist.');            
+            assert.strictEqual(err.$metadata?.httpStatusCode, 404);
         }
     });
 
@@ -43,7 +43,7 @@ describe('CloudServer test error handling', () => {
                 StorageType: 'file'
             };
             const commandDelete = new MultipleBackendDeleteObjectCommand(deleteInput);
-            const deleteResult = await client.send(commandDelete);
+            await client.send(commandDelete);
         } catch (err: any) {
             console.log('Error:', err);
             console.log('Error name:', err.name);

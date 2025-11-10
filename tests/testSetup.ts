@@ -11,7 +11,7 @@ const credentialsProvider: AwsCredentialIdentityProvider = async (): Promise<Aws
     sessionToken: '',
 });
 
-const config: CloudserverClientConfig = {
+const client: CloudserverClientConfig = {
     endpoint: 'http://localhost:8000',
     credentials: credentialsProvider,
     region: 'us-east-1',
@@ -28,56 +28,58 @@ const config: CloudserverClientConfig = {
     }
 };
 
+const s3client = new S3Client({
+    endpoint: client.endpoint,
+    region: client.region,
+    credentials: client.credentials,
+    forcePathStyle: true,
+    requestHandler: {
+        httpsAgent: new https.Agent({
+            rejectUnauthorized: false
+        })
+    },
+    maxAttempts: 1
+});
+
 const randomId = () => Math.random().toString(36).substring(2, 8);
 export const testConfig = {
     bucketName: `test-cloudserverclient-bucket-${randomId()}`,
     objectKey: `test-cloudserverclient-object-${randomId()}`,
+    objectData: 'iAmSomeData',
     canonicalID: '39383234313039353433383937313939393939395247303031202036353034352e30',
 };
 
 async function initBucketForTests() {
-  const client = new S3Client({
-        endpoint: config.endpoint,
-        region: config.region,
-        credentials: config.credentials,
-        forcePathStyle: true,
-        requestHandler: {
-            httpsAgent: new https.Agent({
-                rejectUnauthorized: false
-            })
-        },
-        maxAttempts: 1
-    });
-
     try {
         const createBucketCommand = new CreateBucketCommand({
             Bucket: testConfig.bucketName
         });
-        await client.send(createBucketCommand);
-        
+        await s3client.send(createBucketCommand);
+
         const versioningCommand = new PutBucketVersioningCommand({
             Bucket: testConfig.bucketName,
             VersioningConfiguration: {
                 Status: 'Enabled'
             }
         });
-        await client.send(versioningCommand);
+        await s3client.send(versioningCommand);
         
         const putObjectCommand = new PutObjectCommand({
             Bucket: testConfig.bucketName,
             Key: testConfig.objectKey,
-            Body: 'Hey!!',
+            Body: testConfig.objectData,
         });
-        const result = await client.send(putObjectCommand);
-        putObjectCommand.input.Key += "aaa"
-        await client.send(putObjectCommand);
+        await s3client.send(putObjectCommand);
     } catch (error) {
         console.log('S3 operation failed:', error);
     }
 }
 
-export function createTestClient(): CloudserverClient {
-    return new CloudserverClient(config);
+export function createTestClient(): {client: CloudserverClient, s3client: S3Client} {
+    return {
+        client: new CloudserverClient(client),
+        s3client,
+    };
 }
 
 beforeAll(async () => {
