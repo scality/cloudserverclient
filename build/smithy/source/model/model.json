@@ -4149,8 +4149,7 @@
                 "smithy.api#http": {
                     "method": "PUT",
                     "uri": "/_/backbeat/multiplebackenddata/{Bucket}/{Key+}?operation=putpart"
-                },
-                "smithy.api#idempotent": {}
+                }
             }
         },
         "cloudserver.client#MultipleBackendPutMPUPartInput": {
@@ -4251,8 +4250,7 @@
                 "smithy.api#http": {
                     "method": "PUT",
                     "uri": "/_/backbeat/multiplebackenddata/{Bucket}/{Key}?operation=putobject"
-                },
-                "smithy.api#idempotent": {}
+                }
             }
         },
         "cloudserver.client#MultipleBackendPutObjectInput": {
@@ -4653,8 +4651,7 @@
                 "smithy.api#http": {
                     "method": "PUT",
                     "uri": "/_/backbeat/data/{Bucket}/{Key}?v2"
-                },
-                "smithy.api#idempotent": {}
+                }
             }
         },
         "cloudserver.client#PutDataInput": {
@@ -4748,8 +4745,7 @@
                 "smithy.api#http": {
                     "method": "PUT",
                     "uri": "/_/backbeat/metadata/{Bucket}/{Key+}"
-                },
-                "smithy.api#idempotent": {}
+                }
             }
         },
         "cloudserver.client#PutMetadataInput": {

@@ -4,7 +4,6 @@ namespace cloudserver.client
 @streaming
 blob StreamingBlob
 
-@idempotent
 @http(method: "PUT", uri: "/_/backbeat/multiplebackenddata/{Bucket}/{Key}?operation=putobject")
 operation MultipleBackendPutObject {
     input: MultipleBackendPutObjectInput,

@@ -4,7 +4,6 @@ namespace cloudserver.client
 @streaming
 blob StreamingBlob
 
-@idempotent
 @http(method: "PUT", uri: "/_/backbeat/data/{Bucket}/{Key}?v2")
 operation PutData {
     input: PutDataInput,

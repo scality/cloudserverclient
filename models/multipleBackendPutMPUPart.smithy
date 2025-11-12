@@ -5,7 +5,6 @@ namespace cloudserver.client
 blob StreamingBlob
 
 /// Uploads a part for a multipart upload to multiple backend storage
-@idempotent
 @http(method: "PUT", uri: "/_/backbeat/multiplebackenddata/{Bucket}/{Key+}?operation=putpart")
 operation MultipleBackendPutMPUPart {
     input: MultipleBackendPutMPUPartInput,

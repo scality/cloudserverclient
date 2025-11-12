@@ -1,7 +1,6 @@
 $version: "2.0"
 namespace cloudserver.client
 
-@idempotent
 @http(method: "PUT", uri: "/_/backbeat/metadata/{Bucket}/{Key+}")
 operation PutMetadata {
     input: PutMetadataInput,
