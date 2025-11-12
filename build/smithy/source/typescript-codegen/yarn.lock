@@ -1120,9 +1120,9 @@ tslib@^2.6.2:
   integrity sha512-oJFu94HQb+KVduSUQL7wnpmqnfmLsOA/nAh6b6EH0wCEoK0/mPeXU6c3wKDV83MkOuHPRHtSXKKU99IBazS/2w==
 
 typescript@next:
-  version "6.0.0-dev.20251110"
-  resolved "https://registry.yarnpkg.com/typescript/-/typescript-6.0.0-dev.20251110.tgz#e35f20a20d19ad81bc5d106680bc93a3315dfc62"
-  integrity sha512-tHG+EJXTSaUCMbTNApOuVE3WmgOmEqUwQiAXnmwsF/sVKhPFHQA0+S1hml0Ro8kpayvD0d9AX5iC2S2s+TIQxQ==
+  version "6.0.0-dev.20251112"
+  resolved "https://registry.yarnpkg.com/typescript/-/typescript-6.0.0-dev.20251112.tgz#5e52b7993d86490d804dd04e9d9ae92a0e33f992"
+  integrity sha512-t9fwupCY/vxrHyZR+m3BOwvXdnpuq9Yp0I8ZWFneE5PICANlM4Qgfps3prhzhtiFXPMxfBy5+UEFkynOFybIlg==
 
 typescript@~5.8.3:
   version "5.8.3"

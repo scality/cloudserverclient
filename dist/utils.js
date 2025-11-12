@@ -49,6 +49,19 @@ function createCustomErrorMiddleware() {
                 };
             }
         };
+        const isRetryable = (statusCode, errorCode) => {
+            console.log("AAAAA 11", statusCode, errorCode);
+            // Special handling for 403 - only throttling-related are retryable
+            if (statusCode === 403) {
+                const throttlingCodes = ['SlowDown', 'RequestLimitExceeded', 'Throttling'];
+                return errorCode ? throttlingCodes.includes(errorCode) : false;
+            }
+            // Transient and throttling errors that should be retried
+            const transientErrors = [408, 500, 502, 503, 504];
+            const throttlingErrors = [429, 502, 503, 509];
+            const retryableStatusCodes = new Set([...transientErrors, ...throttlingErrors]);
+            return retryableStatusCodes.has(statusCode);
+        };
         try {
             return await next(args);
         }
@@ -69,6 +82,9 @@ function createCustomErrorMiddleware() {
                     $response: error.$response,
                 });
                 xmlError.parsedXml = errorInfo;
+                const retryable = isRetryable(statusCode, errorInfo.code);
+                xmlError.$retryable = retryable;
+                xmlError.retryable = retryable; // For backward compatibility with sdk v2
                 throw xmlError;
             }
             const s3cNginxProxyResponse = contentType.includes('text/html');
@@ -85,6 +101,7 @@ function createCustomErrorMiddleware() {
                     $response: error.$response,
                 });
                 htmlError.rawBody = html;
+                htmlError.$retryable = isRetryable(statusCode);
                 throw htmlError;
             }
             throw error;

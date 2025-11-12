@@ -1,6 +1,27 @@
 import { XMLParser } from 'fast-xml-parser';
 import { CloudserverServiceException } from '../build/smithy/source/typescript-codegen';
 
+// From : https://github.com/smithy-lang/smithy-typescript/blob/main/packages/service-error-classification/src/constants.ts
+const transientErrors = new Set([500, 502, 503, 504]);
+const nodejsTimeoutErrorCodes = new Set(["ECONNRESET", "ECONNREFUSED", "EPIPE", "ETIMEDOUT"]);
+const transientErrorCodes = new Set(["TimeoutError", "RequestTimeout", "RequestTimeoutException"]);
+const throttlingErrorCodes = new Set([
+    "BandwidthLimitExceeded",
+    "EC2ThrottledException",
+    "LimitExceededException",
+    "PriorRequestNotComplete",
+    "ProvisionedThroughputExceededException",
+    "RequestLimitExceeded",
+    "RequestThrottled",
+    "RequestThrottledException",
+    "SlowDown",
+    "ThrottledException",
+    "Throttling",
+    "ThrottlingException",
+    "TooManyRequestsException",
+    "TransactionInProgressException",
+]);
+
 /**
  * Adds middleware to manually set the Content-Length header on a command.
  * 
@@ -39,30 +60,47 @@ export function addContentLengthMiddleware<TCommand>(
 
 export function createCustomErrorMiddleware() {
     return (next: any) => async (args: any) => {
-        const parseXmlError = (xml: string) => {
-            try {
-                const result = new XMLParser({}).parse(xml);
-                return {
-                    code: result.Error?.Code,
-                    message: result.Error?.Message,
-                    requestId: result.Error?.RequestId,
-                };
-            } catch (parseError) {
-                return {
-                    code: null,
-                    message: 'Malformed XML error response',
-                    requestId: null,
-                };
-            }
-        };
-
         try {
             return await next(args);
         } catch (error: any) {
+            const parseXmlError = (xml: string) => {
+                try {
+                    const result = new XMLParser({}).parse(xml);
+                    return {
+                        code: result.Error?.Code,
+                        message: result.Error?.Message,
+                        requestId: result.Error?.RequestId,
+                    };
+                } catch (parseError) {
+                    return {
+                        code: null,
+                        message: 'Malformed XML error response',
+                        requestId: null,
+                    };
+                }
+            };
+
+            // Set retryable flag. Logic similar to these documentations :
+            // https://github.com/smithy-lang/smithy-typescript/blob/main/packages/service-error-classification/src/index.ts
+            // https://docs.aws.amazon.com/sdkref/latest/guide/feature-retry-behavior.html
+            const isRetryable = (statusCode: number, errorCode?: string): boolean => {
+                 return transientErrors.has(statusCode) ||
+                    nodejsTimeoutErrorCodes.has(errorCode || '') ||
+                    transientErrorCodes.has(errorCode || '') ||
+                    throttlingErrorCodes.has(errorCode || '');
+            };
+
             const response = error.$response;
             const statusCode = error.$metadata?.httpStatusCode;
             const headers = response?.headers || {};
             const contentType = (headers['content-type'] || '').toLowerCase();
+
+            if (contentType.includes('application/json')) {
+                const retryable = isRetryable(statusCode, error.code);
+                error.$retryable = retryable;
+                error.retryable = retryable; // For backward compatibility with sdk v2
+                throw error;
+            }
 
             if (contentType.includes('application/xml') || contentType.includes('text/xml')) {
                 const body = response?.body;
@@ -77,6 +115,9 @@ export function createCustomErrorMiddleware() {
                     $response: error.$response,
                 });
                 xmlError.parsedXml = errorInfo;
+                const retryable = isRetryable(statusCode, errorInfo.code);
+                xmlError.$retryable = retryable;
+                xmlError.retryable = retryable;
 
                 throw xmlError;
             }
@@ -99,6 +140,7 @@ export function createCustomErrorMiddleware() {
                 
                 throw htmlError;
             }
+
             throw error;
         }
     };
