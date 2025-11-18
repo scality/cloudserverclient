@@ -732,6 +732,7 @@ export const se_MultipleBackendPutMPUPartCommand = async(
 ): Promise<__HttpRequest> => {
   const b = rb(input, context);
   const headers: any = map({}, isSerializableHeaderValue, {
+    'x-amz-content-sha256': 'UNSIGNED-PAYLOAD',
     'content-type': 'application/octet-stream',
     [_xsst]: input[_ST]!,
     [_xssc]: input[_SC]!,
@@ -765,6 +766,7 @@ export const se_MultipleBackendPutObjectCommand = async(
 ): Promise<__HttpRequest> => {
   const b = rb(input, context);
   const headers: any = map({}, isSerializableHeaderValue, {
+    'x-amz-content-sha256': 'UNSIGNED-PAYLOAD',
     'content-type': 'application/octet-stream',
     [_cm]: input[_CMD]!,
     [_xsct]: input[_CT]!,
@@ -869,6 +871,7 @@ export const se_PutDataCommand = async(
 ): Promise<__HttpRequest> => {
   const b = rb(input, context);
   const headers: any = map({}, isSerializableHeaderValue, {
+    'x-amz-content-sha256': 'UNSIGNED-PAYLOAD',
     'content-type': 'application/octet-stream',
     [_cm]: input[_CMD]!,
     [_xsci]: input[_CID]!,

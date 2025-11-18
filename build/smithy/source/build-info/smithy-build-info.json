@@ -181,6 +181,7 @@
     "traitNames": [
         "aws.api#service",
         "aws.auth#sigv4",
+        "aws.auth#unsignedPayload",
         "aws.endpoints#endpointsModifier",
         "aws.protocols#restJson1",
         "smithy.api#authDefinition",
@@ -225,6 +226,24 @@
         {
             "id": "HttpMethodSemantics.MissingIdempotentTrait",
             "severity": "WARNING",
+            "shapeId": "cloudserver.client#MultipleBackendPutObject",
+            "message": "This operation uses the `PUT` method in the `http` trait, but is not marked with the idempotent trait",
+            "filename": "/Users/sylvainsenechal/Desktop/cloudserverclient/models/multipleBackendPutObject.smithy",
+            "line": 10,
+            "column": 1
+        },
+        {
+            "id": "HttpMethodSemantics.MissingIdempotentTrait",
+            "severity": "WARNING",
+            "shapeId": "cloudserver.client#PutData",
+            "message": "This operation uses the `PUT` method in the `http` trait, but is not marked with the idempotent trait",
+            "filename": "/Users/sylvainsenechal/Desktop/cloudserverclient/models/putdata.smithy",
+            "line": 9,
+            "column": 1
+        },
+        {
+            "id": "HttpMethodSemantics.MissingIdempotentTrait",
+            "severity": "WARNING",
             "shapeId": "cloudserver.client#PutMetadata",
             "message": "This operation uses the `PUT` method in the `http` trait, but is not marked with the idempotent trait",
             "filename": "/Users/sylvainsenechal/Desktop/cloudserverclient/models/putMetadata.smithy",
@@ -234,10 +253,10 @@
         {
             "id": "HttpMethodSemantics.MissingIdempotentTrait",
             "severity": "WARNING",
-            "shapeId": "cloudserver.client#MultipleBackendPutObject",
+            "shapeId": "cloudserver.client#MultipleBackendPutMPUPart",
             "message": "This operation uses the `PUT` method in the `http` trait, but is not marked with the idempotent trait",
-            "filename": "/Users/sylvainsenechal/Desktop/cloudserverclient/models/multipleBackendPutObject.smithy",
-            "line": 7,
+            "filename": "/Users/sylvainsenechal/Desktop/cloudserverclient/models/multipleBackendPutMPUPart.smithy",
+            "line": 10,
             "column": 1
         },
         {
@@ -246,24 +265,6 @@
             "shapeId": "cloudserver.client#MultipleBackendDeleteObjectTagging",
             "message": "This operation uses the `DELETE` method in the `http` trait, but the `Body` member is sent as the payload of the request because it is marked with the `httpPayload` trait. Many HTTP clients do not support payloads with DELETE requests. Consider binding this member to other parts of the HTTP request such as a query string parameter using the `httpQuery` trait, a header using the `httpHeader` trait, or a path segment using the `httpLabel` trait.",
             "filename": "/Users/sylvainsenechal/Desktop/cloudserverclient/models/multipleBackendDeleteObjectTagging.smithy",
-            "line": 7,
-            "column": 1
-        },
-        {
-            "id": "HttpMethodSemantics.MissingIdempotentTrait",
-            "severity": "WARNING",
-            "shapeId": "cloudserver.client#MultipleBackendPutMPUPart",
-            "message": "This operation uses the `PUT` method in the `http` trait, but is not marked with the idempotent trait",
-            "filename": "/Users/sylvainsenechal/Desktop/cloudserverclient/models/multipleBackendPutMPUPart.smithy",
-            "line": 8,
-            "column": 1
-        },
-        {
-            "id": "HttpMethodSemantics.MissingIdempotentTrait",
-            "severity": "WARNING",
-            "shapeId": "cloudserver.client#PutData",
-            "message": "This operation uses the `PUT` method in the `http` trait, but is not marked with the idempotent trait",
-            "filename": "/Users/sylvainsenechal/Desktop/cloudserverclient/models/putdata.smithy",
             "line": 7,
             "column": 1
         },

@@ -1,11 +1,14 @@
 $version: "2.0"
 namespace cloudserver.client
 
+use aws.auth#unsignedPayload
+
 @streaming
 blob StreamingBlob
 
 /// Uploads a part for a multipart upload to multiple backend storage
 @http(method: "PUT", uri: "/_/backbeat/multiplebackenddata/{Bucket}/{Key+}?operation=putpart")
+@unsignedPayload
 operation MultipleBackendPutMPUPart {
     input: MultipleBackendPutMPUPartInput,
     output: MultipleBackendPutMPUPartOutput,

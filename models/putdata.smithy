@@ -1,10 +1,13 @@
 $version: "2.0"
 namespace cloudserver.client
 
+use aws.auth#unsignedPayload
+
 @streaming
 blob StreamingBlob
 
 @http(method: "PUT", uri: "/_/backbeat/data/{Bucket}/{Key}?v2")
+@unsignedPayload
 operation PutData {
     input: PutDataInput,
     output: PutDataOutput

@@ -4145,6 +4145,7 @@
                 "target": "cloudserver.client#MultipleBackendPutMPUPartOutput"
             },
             "traits": {
+                "aws.auth#unsignedPayload": {},
                 "smithy.api#documentation": "Uploads a part for a multipart upload to multiple backend storage",
                 "smithy.api#http": {
                     "method": "PUT",
@@ -4247,6 +4248,7 @@
                 "target": "cloudserver.client#MultipleBackendPutObjectOutput"
             },
             "traits": {
+                "aws.auth#unsignedPayload": {},
                 "smithy.api#http": {
                     "method": "PUT",
                     "uri": "/_/backbeat/multiplebackenddata/{Bucket}/{Key}?operation=putobject"
@@ -4648,6 +4650,7 @@
                 "target": "cloudserver.client#PutDataOutput"
             },
             "traits": {
+                "aws.auth#unsignedPayload": {},
                 "smithy.api#http": {
                     "method": "PUT",
                     "uri": "/_/backbeat/data/{Bucket}/{Key}?v2"

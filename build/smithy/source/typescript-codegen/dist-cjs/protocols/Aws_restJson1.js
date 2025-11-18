@@ -458,6 +458,7 @@ exports.se_MultipleBackendInitiateMPUCommand = se_MultipleBackendInitiateMPUComm
 const se_MultipleBackendPutMPUPartCommand = async (input, context) => {
     const b = (0, core_2.requestBuilder)(input, context);
     const headers = (0, smithy_client_1.map)({}, smithy_client_1.isSerializableHeaderValue, {
+        'x-amz-content-sha256': 'UNSIGNED-PAYLOAD',
         'content-type': 'application/octet-stream',
         [_xsst]: input[_ST],
         [_xssc]: input[_SC],
@@ -485,6 +486,7 @@ exports.se_MultipleBackendPutMPUPartCommand = se_MultipleBackendPutMPUPartComman
 const se_MultipleBackendPutObjectCommand = async (input, context) => {
     const b = (0, core_2.requestBuilder)(input, context);
     const headers = (0, smithy_client_1.map)({}, smithy_client_1.isSerializableHeaderValue, {
+        'x-amz-content-sha256': 'UNSIGNED-PAYLOAD',
         'content-type': 'application/octet-stream',
         [_cm]: input[_CMD],
         [_xsct]: input[_CT],
@@ -571,6 +573,7 @@ exports.se_PutBucketIndexesCommand = se_PutBucketIndexesCommand;
 const se_PutDataCommand = async (input, context) => {
     const b = (0, core_2.requestBuilder)(input, context);
     const headers = (0, smithy_client_1.map)({}, smithy_client_1.isSerializableHeaderValue, {
+        'x-amz-content-sha256': 'UNSIGNED-PAYLOAD',
         'content-type': 'application/octet-stream',
         [_cm]: input[_CMD],
         [_xsci]: input[_CID],
