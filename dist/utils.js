@@ -1,6 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.addContentLengthMiddleware = addContentLengthMiddleware;
+exports.createSigningUnescapePathMiddleware = createSigningUnescapePathMiddleware;
 exports.createCustomErrorMiddleware = createCustomErrorMiddleware;
 const fast_xml_parser_1 = require("fast-xml-parser");
 const typescript_codegen_1 = require("../build/smithy/source/typescript-codegen");
@@ -49,6 +50,18 @@ function addContentLengthMiddleware(command, contentLength) {
         return next(args);
     }, { step: 'build', priority: 'high' });
     return;
+}
+function createSigningUnescapePathMiddleware() {
+    return (next) => async (args) => {
+        // If a key, or any argument contains a "/", our client 
+        // replace it with "%2F" during signing, and the signature
+        // verification fails on Arsenal.
+        // Here, we replace all "%2F" back to "/", before the signing
+        // step
+        const request = args.request;
+        request.path = request.path.replace(/%2F/g, '/');
+        return next(args);
+    };
 }
 function createCustomErrorMiddleware() {
     return (next) => async (args) => {

@@ -9,7 +9,6 @@ blob StreamingBlob
 
 @http(method: "PUT", uri: "/_/backbeat/multiplebackenddata/{Bucket}/{Key}?operation=putobject")
 @unsignedPayload
-
 operation MultipleBackendPutObject {
     input: MultipleBackendPutObjectInput,
     output: MultipleBackendPutObjectOutput

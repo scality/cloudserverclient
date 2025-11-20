@@ -44,7 +44,7 @@ const s3client = new S3Client({
 const randomId = () => Math.random().toString(36).substring(2, 8);
 export const testConfig = {
     bucketName: `test-cloudserverclient-bucket-${randomId()}`,
-    objectKey: `test-cloudserverclient-object-${randomId()}`,
+    objectKey: `test-cloudserverclient-object-sla/sh${randomId()}`,
     objectData: 'iAmSomeData',
     canonicalID: '39383234313039353433383937313939393939395247303031202036353034352e30',
 };

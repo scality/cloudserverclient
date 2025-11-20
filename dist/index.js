@@ -26,6 +26,11 @@ class CloudserverClient extends typescript_codegen_1.CloudserverClient {
             step: 'deserialize',
             name: 'cloudserverErrorHandler'
         });
+        this.middlewareStack.add((0, utils_1.createSigningUnescapePathMiddleware)(), {
+            step: 'build',
+            priority: 'high',
+            name: 'signingUnescapePathHandler'
+        });
     }
 }
 exports.CloudserverClient = CloudserverClient;
