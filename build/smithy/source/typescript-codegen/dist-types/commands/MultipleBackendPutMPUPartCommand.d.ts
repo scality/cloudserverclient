@@ -40,7 +40,7 @@ declare const MultipleBackendPutMPUPartCommand_base: {
  *   Key: "STRING_VALUE", // required
  *   StorageType: "STRING_VALUE",
  *   StorageClass: "STRING_VALUE", // required
- *   PartNumber: Number("long"),
+ *   PartNumber: Number("int"),
  *   UploadId: "STRING_VALUE",
  *   RequestUids: "STRING_VALUE",
  *   Body: "MULTIPLE_TYPES_ACCEPTED", // see \@smithy/types -> StreamingBlobPayloadInputTypes // required
@@ -48,9 +48,9 @@ declare const MultipleBackendPutMPUPartCommand_base: {
  * const command = new MultipleBackendPutMPUPartCommand(input);
  * const response = await client.send(command);
  * // { // MultipleBackendPutMPUPartOutput
- * //   partNumber: Number("long"),
+ * //   partNumber: Number("int"),
  * //   ETag: "STRING_VALUE",
- * //   numberSubParts: Number("long"),
+ * //   numberSubParts: Number("int"),
  * // };
  *
  * ```

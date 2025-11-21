@@ -123,7 +123,6 @@ import {
   dateToUtcString as __dateToUtcString,
   expectBoolean as __expectBoolean,
   expectInt32 as __expectInt32,
-  expectLong as __expectLong,
   expectNonNull as __expectNonNull,
   expectObject as __expectObject,
   expectString as __expectString,
@@ -1439,8 +1438,8 @@ export const de_GetObjectCommand = async(
     const data: Record<string, any> = __expectNonNull((__expectObject(await parseBody(output.body, context))), "body");
     const doc = take(data, {
       'ETag': __expectString,
-      'numberSubParts': __expectLong,
-      'partNumber': __expectLong,
+      'numberSubParts': __expectInt32,
+      'partNumber': __expectInt32,
     });
     Object.assign(contents, doc);
     return contents;

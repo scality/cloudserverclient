@@ -226,9 +226,9 @@
         {
             "id": "HttpMethodSemantics.MissingIdempotentTrait",
             "severity": "WARNING",
-            "shapeId": "cloudserver.client#MultipleBackendPutMPUPart",
+            "shapeId": "cloudserver.client#MultipleBackendPutObject",
             "message": "This operation uses the `PUT` method in the `http` trait, but is not marked with the idempotent trait",
-            "filename": "/Users/sylvainsenechal/Desktop/cloudserverclient/models/multipleBackendPutMPUPart.smithy",
+            "filename": "/Users/sylvainsenechal/Desktop/cloudserverclient/models/multipleBackendPutObject.smithy",
             "line": 10,
             "column": 1
         },
@@ -262,9 +262,9 @@
         {
             "id": "HttpMethodSemantics.MissingIdempotentTrait",
             "severity": "WARNING",
-            "shapeId": "cloudserver.client#MultipleBackendPutObject",
+            "shapeId": "cloudserver.client#MultipleBackendPutMPUPart",
             "message": "This operation uses the `PUT` method in the `http` trait, but is not marked with the idempotent trait",
-            "filename": "/Users/sylvainsenechal/Desktop/cloudserverclient/models/multipleBackendPutObject.smithy",
+            "filename": "/Users/sylvainsenechal/Desktop/cloudserverclient/models/multipleBackendPutMPUPart.smithy",
             "line": 10,
             "column": 1
         },

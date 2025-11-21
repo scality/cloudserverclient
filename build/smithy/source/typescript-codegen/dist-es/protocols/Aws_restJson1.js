@@ -1,7 +1,7 @@
 import { CloudserverServiceException as __BaseException } from "../models/CloudserverServiceException";
 import { loadRestJsonErrorCode, parseJsonBody as parseBody, parseJsonErrorBody as parseErrorBody, } from "@aws-sdk/core";
 import { requestBuilder as rb } from "@smithy/core";
-import { dateToUtcString as __dateToUtcString, expectBoolean as __expectBoolean, expectInt32 as __expectInt32, expectLong as __expectLong, expectNonNull as __expectNonNull, expectObject as __expectObject, expectString as __expectString, parseBoolean as __parseBoolean, parseRfc7231DateTime as __parseRfc7231DateTime, serializeDateTime as __serializeDateTime, strictParseInt32 as __strictParseInt32, _json, collectBody, isSerializableHeaderValue, map, take, withBaseException, } from "@smithy/smithy-client";
+import { dateToUtcString as __dateToUtcString, expectBoolean as __expectBoolean, expectInt32 as __expectInt32, expectNonNull as __expectNonNull, expectObject as __expectObject, expectString as __expectString, parseBoolean as __parseBoolean, parseRfc7231DateTime as __parseRfc7231DateTime, serializeDateTime as __serializeDateTime, strictParseInt32 as __strictParseInt32, _json, collectBody, isSerializableHeaderValue, map, take, withBaseException, } from "@smithy/smithy-client";
 export const se_BatchDeleteCommand = async (input, context) => {
     const b = rb(input, context);
     const headers = map({}, isSerializableHeaderValue, {
@@ -951,8 +951,8 @@ export const de_MultipleBackendPutMPUPartCommand = async (output, context) => {
     const data = __expectNonNull((__expectObject(await parseBody(output.body, context))), "body");
     const doc = take(data, {
         'ETag': __expectString,
-        'numberSubParts': __expectLong,
-        'partNumber': __expectLong,
+        'numberSubParts': __expectInt32,
+        'partNumber': __expectInt32,
     });
     Object.assign(contents, doc);
     return contents;

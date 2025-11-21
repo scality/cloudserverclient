@@ -32,7 +32,7 @@ structure MultipleBackendPutMPUPartInput {
     StorageClass: String,
     
     @httpHeader("X-Scal-Part-Number")
-    PartNumber: Long,
+    PartNumber: Integer,
     
     @httpHeader("X-Scal-Upload-Id")
     UploadId: String,
@@ -48,11 +48,11 @@ structure MultipleBackendPutMPUPartInput {
 @output
 structure MultipleBackendPutMPUPartOutput {
     /// Part number
-    partNumber: Long,
+    partNumber: Integer,
     
     /// ETag of the uploaded part
     ETag: String,
     
     /// Number of sub-parts
-    numberSubParts: Long,
+    numberSubParts: Integer,
 }

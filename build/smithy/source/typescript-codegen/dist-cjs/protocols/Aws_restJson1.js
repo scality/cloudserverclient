@@ -1003,8 +1003,8 @@ const de_MultipleBackendPutMPUPartCommand = async (output, context) => {
     const data = (0, smithy_client_1.expectNonNull)(((0, smithy_client_1.expectObject)(await (0, core_1.parseJsonBody)(output.body, context))), "body");
     const doc = (0, smithy_client_1.take)(data, {
         'ETag': smithy_client_1.expectString,
-        'numberSubParts': smithy_client_1.expectLong,
-        'partNumber': smithy_client_1.expectLong,
+        'numberSubParts': smithy_client_1.expectInt32,
+        'partNumber': smithy_client_1.expectInt32,
     });
     Object.assign(contents, doc);
     return contents;
