@@ -12,9 +12,9 @@ export const se_BatchDeleteCommand = async (input, context) => {
         [_xsct]: input[_CT],
         [_xsru]: input[_RU],
     });
-    b.bp("/_/backbeat/batchdelete/{Bucket}/{Key}");
+    b.bp("/_/backbeat/batchdelete/{Bucket}/{Key+}");
     b.p('Bucket', () => input.Bucket, '{Bucket}', false);
-    b.p('Key', () => input.Key, '{Key}', false);
+    b.p('Key', () => input.Key, '{Key+}', true);
     let body;
     body = JSON.stringify(take(input, {
         'Locations': _ => _json(_),
@@ -475,9 +475,9 @@ export const se_MultipleBackendPutObjectCommand = async (input, context) => {
         [_xst]: input[_T],
         [_xsru]: input[_RU],
     });
-    b.bp("/_/backbeat/multiplebackenddata/{Bucket}/{Key}");
+    b.bp("/_/backbeat/multiplebackenddata/{Bucket}/{Key+}");
     b.p('Bucket', () => input.Bucket, '{Bucket}', false);
-    b.p('Key', () => input.Key, '{Key}', false);
+    b.p('Key', () => input.Key, '{Key+}', true);
     const query = map({
         [_o]: [, "putobject"],
     });
@@ -551,9 +551,9 @@ export const se_PutDataCommand = async (input, context) => {
         [_xsvr]: [() => isSerializableHeaderValue(input[_VR]), () => input[_VR].toString()],
         [_xsru]: input[_RU],
     });
-    b.bp("/_/backbeat/data/{Bucket}/{Key}");
+    b.bp("/_/backbeat/data/{Bucket}/{Key+}");
     b.p('Bucket', () => input.Bucket, '{Bucket}', false);
-    b.p('Key', () => input.Key, '{Key}', false);
+    b.p('Key', () => input.Key, '{Key+}', true);
     const query = map({
         [_v]: [, ""],
     });
@@ -952,7 +952,7 @@ export const de_MultipleBackendPutMPUPartCommand = async (output, context) => {
     const doc = take(data, {
         'ETag': __expectString,
         'numberSubParts': __expectInt32,
-        'partNumber': __expectInt32,
+        'partNumber': __expectString,
     });
     Object.assign(contents, doc);
     return contents;

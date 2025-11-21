@@ -7,7 +7,7 @@ use aws.auth#unsignedPayload
 @streaming
 blob StreamingBlob
 
-@http(method: "PUT", uri: "/_/backbeat/multiplebackenddata/{Bucket}/{Key}?operation=putobject")
+@http(method: "PUT", uri: "/_/backbeat/multiplebackenddata/{Bucket}/{Key+}?operation=putobject")
 @unsignedPayload
 operation MultipleBackendPutObject {
     input: MultipleBackendPutObjectInput,

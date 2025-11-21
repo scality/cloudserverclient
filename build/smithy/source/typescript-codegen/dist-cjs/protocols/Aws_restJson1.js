@@ -16,9 +16,9 @@ const se_BatchDeleteCommand = async (input, context) => {
         [_xsct]: input[_CT],
         [_xsru]: input[_RU],
     });
-    b.bp("/_/backbeat/batchdelete/{Bucket}/{Key}");
+    b.bp("/_/backbeat/batchdelete/{Bucket}/{Key+}");
     b.p('Bucket', () => input.Bucket, '{Bucket}', false);
-    b.p('Key', () => input.Key, '{Key}', false);
+    b.p('Key', () => input.Key, '{Key+}', true);
     let body;
     body = JSON.stringify((0, smithy_client_1.take)(input, {
         'Locations': _ => (0, smithy_client_1._json)(_),
@@ -501,9 +501,9 @@ const se_MultipleBackendPutObjectCommand = async (input, context) => {
         [_xst]: input[_T],
         [_xsru]: input[_RU],
     });
-    b.bp("/_/backbeat/multiplebackenddata/{Bucket}/{Key}");
+    b.bp("/_/backbeat/multiplebackenddata/{Bucket}/{Key+}");
     b.p('Bucket', () => input.Bucket, '{Bucket}', false);
-    b.p('Key', () => input.Key, '{Key}', false);
+    b.p('Key', () => input.Key, '{Key+}', true);
     const query = (0, smithy_client_1.map)({
         [_o]: [, "putobject"],
     });
@@ -580,9 +580,9 @@ const se_PutDataCommand = async (input, context) => {
         [_xsvr]: [() => (0, smithy_client_1.isSerializableHeaderValue)(input[_VR]), () => input[_VR].toString()],
         [_xsru]: input[_RU],
     });
-    b.bp("/_/backbeat/data/{Bucket}/{Key}");
+    b.bp("/_/backbeat/data/{Bucket}/{Key+}");
     b.p('Bucket', () => input.Bucket, '{Bucket}', false);
-    b.p('Key', () => input.Key, '{Key}', false);
+    b.p('Key', () => input.Key, '{Key+}', true);
     const query = (0, smithy_client_1.map)({
         [_v]: [, ""],
     });
@@ -1004,7 +1004,7 @@ const de_MultipleBackendPutMPUPartCommand = async (output, context) => {
     const doc = (0, smithy_client_1.take)(data, {
         'ETag': smithy_client_1.expectString,
         'numberSubParts': smithy_client_1.expectInt32,
-        'partNumber': smithy_client_1.expectInt32,
+        'partNumber': smithy_client_1.expectString,
     });
     Object.assign(contents, doc);
     return contents;

@@ -48,7 +48,7 @@ declare const MultipleBackendPutMPUPartCommand_base: {
  * const command = new MultipleBackendPutMPUPartCommand(input);
  * const response = await client.send(command);
  * // { // MultipleBackendPutMPUPartOutput
- * //   partNumber: Number("int"),
+ * //   partNumber: "STRING_VALUE",
  * //   ETag: "STRING_VALUE",
  * //   numberSubParts: Number("int"),
  * // };

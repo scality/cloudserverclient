@@ -8,5 +8,4 @@
  * @param contentLength - The content length value (number or string)
  */
 export declare function addContentLengthMiddleware<TCommand>(command: TCommand, contentLength: number | string | undefined): void;
-export declare function createSigningUnescapePathMiddleware(): (next: any) => (args: any) => Promise<any>;
 export declare function createCustomErrorMiddleware(): (next: any) => (args: any) => Promise<any>;

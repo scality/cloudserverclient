@@ -48,7 +48,7 @@ structure MultipleBackendPutMPUPartInput {
 @output
 structure MultipleBackendPutMPUPartOutput {
     /// Part number
-    partNumber: Integer,
+    partNumber: String,
     
     /// ETag of the uploaded part
     ETag: String,

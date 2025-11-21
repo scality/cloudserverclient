@@ -1228,7 +1228,7 @@ export interface MultipleBackendPutMPUPartOutput {
    * Part number
    * @public
    */
-  partNumber?: number | undefined;
+  partNumber?: string | undefined;
 
   /**
    * ETag of the uploaded part

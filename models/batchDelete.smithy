@@ -2,7 +2,7 @@ $version: "2.0"
 namespace cloudserver.client
 
 @idempotent
-@http(method: "POST", uri: "/_/backbeat/batchdelete/{Bucket}/{Key}")
+@http(method: "POST", uri: "/_/backbeat/batchdelete/{Bucket}/{Key+}")
 operation BatchDelete {
     input: BatchDeleteInput,
     output: BatchDeleteOutput

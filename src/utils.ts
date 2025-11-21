@@ -58,19 +58,6 @@ export function addContentLengthMiddleware<TCommand>(
     return;
 }
 
-export function createSigningUnescapePathMiddleware() {
-    return (next: any) => async (args: any) => {
-        // If a key, or any argument contains a "/", our client 
-        // replace it with "%2F" during signing, and the signature
-        // verification fails on Arsenal.
-        // Here, we replace all "%2F" back to "/", before the signing
-        // step
-        const request = args.request as any;
-        request.path = request.path.replace(/%2F/g, '/');
-        return next(args);
-    };
-}
-
 export function createCustomErrorMiddleware() {
     return (next: any) => async (args: any) => {
         try {

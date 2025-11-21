@@ -1910,7 +1910,7 @@
             "traits": {
                 "smithy.api#http": {
                     "method": "POST",
-                    "uri": "/_/backbeat/batchdelete/{Bucket}/{Key}"
+                    "uri": "/_/backbeat/batchdelete/{Bucket}/{Key+}"
                 },
                 "smithy.api#idempotent": {}
             }
@@ -4217,7 +4217,7 @@
             "type": "structure",
             "members": {
                 "partNumber": {
-                    "target": "smithy.api#Integer",
+                    "target": "smithy.api#String",
                     "traits": {
                         "smithy.api#documentation": "Part number"
                     }
@@ -4251,7 +4251,7 @@
                 "aws.auth#unsignedPayload": {},
                 "smithy.api#http": {
                     "method": "PUT",
-                    "uri": "/_/backbeat/multiplebackenddata/{Bucket}/{Key}?operation=putobject"
+                    "uri": "/_/backbeat/multiplebackenddata/{Bucket}/{Key+}?operation=putobject"
                 }
             }
         },
@@ -4653,7 +4653,7 @@
                 "aws.auth#unsignedPayload": {},
                 "smithy.api#http": {
                     "method": "PUT",
-                    "uri": "/_/backbeat/data/{Bucket}/{Key}?v2"
+                    "uri": "/_/backbeat/data/{Bucket}/{Key+}?v2"
                 }
             }
         },
