@@ -50,7 +50,6 @@ describe('CloudServer API Tests', () => {
     });
 
     it('should test GetSingleObject', async () => {
-        // S3VAULT=mem S3METADATA=scality S3DATA=mem
         const getInput: GetObjectInput = {
             Bucket: testConfig.bucketName,
             Key: testConfig.objectKey,
@@ -76,7 +75,6 @@ describe('CloudServer API Tests', () => {
     });
 
     it('should test BatchDelete', async () => {
-        // S3VAULT=mem S3METADATA=scality S3DATA=mem
         const locations: BatchDeleteLocation[] = [
             {
                 dataStoreName: "mem", 

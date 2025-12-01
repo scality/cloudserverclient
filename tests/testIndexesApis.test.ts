@@ -18,7 +18,6 @@ describe('CloudServer Indexes API Tests', () => {
     });
 
     it('should test PutBucketIndexes', async () => {
-        // S3VAULT=mem S3METADATA=mongodb S3DATA=mem
         const indexData = JSON.stringify([
             {
                 name: "testIndex1",
@@ -38,7 +37,6 @@ describe('CloudServer Indexes API Tests', () => {
     });
 
     it('should test GetBucketIndexes', async () => {
-        // S3VAULT=mem S3METADATA=mongodb S3DATA=mem
         const getBucketIndexesInput: GetBucketIndexesInput = {
             Bucket: testConfig.bucketName,
         };

@@ -16,8 +16,6 @@ describe('CloudServer test error handling', () => {
     });
 
     it('should test xml parsing', async () => {
-        // Run CloudServer with : S3VAULT=mem S3METADATA=mem S3DATA=mem REMOTE_MANAGEMENT_DISABLE=true yarn start
-        // Needs to tamper with Cloudserver response manually to return an html error..
         try {
             const getInput: GetObjectInput = {
                 Bucket: testConfig.bucketName,
@@ -35,6 +33,7 @@ describe('CloudServer test error handling', () => {
 
     it.skip('should test html parsing', async () => {
         // Run CloudServer with : S3VAULT=mem S3METADATA=mem S3DATA=mem REMOTE_MANAGEMENT_DISABLE=true yarn start
+        // Needs to tamper with Cloudserver response manually to return an html error
         try {
             const deleteInput: MultipleBackendDeleteObjectInput = {
                 Bucket: 'testConfig.bucketName',

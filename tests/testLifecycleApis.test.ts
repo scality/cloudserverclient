@@ -20,7 +20,6 @@ describe('CloudServer Lifecycle API Tests', () => {
     });
 
     it('should test ListLifecycleCurrents', async () => {
-        // Run Cloudserver with : S3VAULT=mem S3METADATA=mongodb S3DATA=mem REMOTE_MANAGEMENT_DISABLE=true yarn start
         const listInput: ListLifecycleCurrentsInput = {
             Bucket: testConfig.bucketName,
             MaxKeys: 1,
