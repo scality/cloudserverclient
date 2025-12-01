@@ -1,0 +1,71 @@
+---
+name: release
+run-name: release ${{ inputs.tag }}
+
+on:
+  push:
+    branches:
+      - improvement/CLDSRVCLT-7
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Tag to be released (e.g., 1.0.0)'
+        required: true
+
+
+
+jobs:
+  build-and-tag:
+    name: Build and tag
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'yarn'
+
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile
+
+      - name: Setup Smithy CLI
+        uses: ./.github/actions/setup-smithy
+
+      - name: Build project
+        run: yarn build
+
+      - name: Create Tag with Build Artifacts
+        run: |
+          # Configure git user to the GitHub Actions bot
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+
+          # Force add the build folders (even if they are in .gitignore)
+          git add -f dist build
+
+          # Check if there are changes to commit
+          if git diff --staged --quiet; then
+            echo "No changes in build folders or build failed to produce output."
+            exit 1
+          fi
+
+          # Determine tag name
+          TAG_NAME="${{ inputs.tag }}"
+          if [ -z "$TAG_NAME" ]; then
+            TAG_NAME="test-${{ github.sha }}"
+          fi
+
+          # Commit the build artifacts
+          git commit -m "Build artifacts for version $TAG_NAME"
+
+          # Create the tag
+          git tag $TAG_NAME
+
+          # Push the tag to the repository
+          git push origin $TAG_NAME
