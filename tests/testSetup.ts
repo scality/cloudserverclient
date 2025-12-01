@@ -1,4 +1,5 @@
 import https from 'https';
+import assert from 'assert';
 import { CloudserverClient, CloudserverClientConfig } from '../src/index';
 import { S3Client, PutObjectCommand, CreateBucketCommand, PutBucketVersioningCommand } from '@aws-sdk/client-s3';
 import { AwsCredentialIdentity, AwsCredentialIdentityProvider } from '@aws-sdk/types';
@@ -71,7 +72,7 @@ async function initBucketForTests() {
         });
         await s3client.send(putObjectCommand);
     } catch (error: any) {
-        console.log('S3 operation failed:', error);
+        assert.fail(`Failed to initialize bucket for tests: ${error}`);
     }
 }
 

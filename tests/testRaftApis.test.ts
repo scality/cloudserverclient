@@ -107,7 +107,7 @@ describe('CloudServer Raft API Tests', () => {
                 logRes.log.on('data', (record: any) => {
                     logStats.nbLogRecordsRead += 1;
                     if (record.entries) {
-                        record.entries.forEach((entry: any) => {
+                        record.entries.forEach((_entry: any) => {
                             logStats.nbLogEntriesRead += 1;
                         });
                     }

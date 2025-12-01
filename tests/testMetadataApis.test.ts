@@ -18,7 +18,6 @@ describe('CloudServer Metadata API Tests', () => {
     });
 
     it('should test GetMetadata API', async () => {
-        // Run Cloudserver with : S3VAULT=mem S3METADATA=mongodb S3DATA=mem REMOTE_MANAGEMENT_DISABLE=true yarn start
         const getMetadataInput: GetMetadataInput = {
             Bucket: testConfig.bucketName,
             Key: testConfig.objectKey,
@@ -29,14 +28,14 @@ describe('CloudServer Metadata API Tests', () => {
     });
 
     it('should test PutMetadata API', async () => {
-        // S3VAULT=mem S3METADATA=scality S3DATA=mem
         const metadataObj = {
             "content-length": 1000,
             "content-type": "text/plain",
             "x-amz-meta-custom": "test-valuee",
             "last-modified": new Date().toISOString(),
             "etag": "\"d41d8cd98f00b204e9800998ecf8427e\"",
-            "x-amz-version-id": "null"
+            "x-amz-version-id": "null",
+            "replicationInfo": {}
         };
         
         const metadataString = JSON.stringify(metadataObj);
@@ -55,7 +54,6 @@ describe('CloudServer Metadata API Tests', () => {
 
 
     it('should test GetBucketMetadata API', async () => {
-        // S3VAULT=mem S3METADATA=scality S3DATA=mem
         const getBucketMetadataInput: GetBucketMetadataInput = {
             Bucket: testConfig.bucketName,
         };
