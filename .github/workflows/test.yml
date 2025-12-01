@@ -13,6 +13,7 @@ jobs:
   lint:
     name: Lint and typecheck
     runs-on: ubuntu-latest
+    needs: lint
     
     steps:
       - name: Checkout code
