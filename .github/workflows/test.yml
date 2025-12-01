@@ -1,0 +1,88 @@
+name: Test
+
+on:
+  push:
+    branches-ignore:
+    - 'development/**'
+
+permissions:
+  contents: read
+  packages: write
+
+jobs:
+  test-mongodb-backend:
+    name: Test with MongoDB backend
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'yarn'
+
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile
+
+      - name: Start Cloudserver with MongoDB backend
+        run: docker compose -f .github/docker-compose.cloudserver-mongo.yml up -d
+
+      - name: Wait for Cloudserver to be ready
+        run: |
+          set -o pipefail
+          bash .github/scripts/wait_for_local_port.bash 8000 40
+
+      - name: Run MongoDB backend tests
+        run: yarn test:mongo-backend
+
+      - name: Stop Cloudserver
+        if: always()
+        run: docker compose -f .github/docker-compose.cloudserver-mongo.yml down
+
+  test-metadata-backend:
+    name: Test with Scality metadata backend
+    runs-on: ubuntu-latest
+    needs: lint
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'yarn'
+
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile
+
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ github.token }}
+
+      - name: Start Cloudserver with Scality metadata backend
+        run: docker compose -f .github/docker-compose.cloudserver-metadata.yml up -d
+
+      - name: Wait for metadata to be ready
+        run: |
+          set -o pipefail
+          bash .github/scripts/wait_for_local_port.bash 9000 40
+
+      - name: Wait for Cloudserver to be ready
+        run: |
+          set -o pipefail
+          bash .github/scripts/wait_for_local_port.bash 8000 60
+
+      - name: Run metadata backend tests
+        run: yarn test:metadata-backend
+
+      - name: Stop Cloudserver
+        if: always()
+        run: docker compose -f .github/docker-compose.cloudserver-metadata.yml down
