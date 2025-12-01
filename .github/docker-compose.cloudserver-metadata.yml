@@ -1,0 +1,20 @@
+services:
+  metadata-standalone:
+    image: ghcr.io/scality/metadata:8.11.0-standalone
+    platform: linux/amd64
+    network_mode: 'host'
+    volumes:
+      - ./md-config.json:/mnt/standalone_workdir/config.json:ro
+
+  cloudserver-metadata:
+    image: ghcr.io/scality/cloudserver:9.1.4
+    platform: linux/amd64
+    network_mode: 'host'
+    environment:
+      - S3VAULT=mem
+      - S3METADATA=scality
+      - S3DATA=mem
+      - REMOTE_MANAGEMENT_DISABLE=true
+      - LOG_LEVEL=info
+    depends_on:
+      - metadata-standalone
