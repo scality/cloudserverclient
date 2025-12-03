@@ -25,6 +25,15 @@
                     "packageVersion": "1.0.0"
                 }
             }
+        },
+        "cloudserverProxyBackbeatApis": {
+            "plugins": {
+                "typescript-codegen": {
+                    "service": "cloudserver.proxyBackbeatApis#CloudserverProxyBackbeatApis",
+                    "package": "@scality/cloudserverclient-proxy-backbeat",
+                    "packageVersion": "1.0.0"
+                }
+            }
         }
     }
 }

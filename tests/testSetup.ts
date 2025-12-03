@@ -4,6 +4,7 @@ import { BackbeatRoutesClient, CloudserverBackbeatRoutesClientConfig } from '../
 import { S3Client, PutObjectCommand, CreateBucketCommand, PutBucketVersioningCommand } from '@aws-sdk/client-s3';
 import { AwsCredentialIdentity, AwsCredentialIdentityProvider } from '@aws-sdk/types';
 import { BucketQuotaClient } from '../src/clients/bucketQuota';
+import { ProxyBackbeatApisClient } from '../src/clients/proxyBackbeatApis';
 jest.setTimeout(30000);
 
 const credentialsProvider: AwsCredentialIdentityProvider = async (): Promise<AwsCredentialIdentity> => ({
@@ -48,6 +49,7 @@ export const testConfig = {
     objectKey: `test-cloudserverclient-object-sla/sh${randomId()}`,
     objectData: 'iAmSomeData',
     canonicalID: '39383234313039353433383937313939393939395247303031202036353034352e30',
+    versionID: ''
 };
 
 async function initBucketForTests() {
@@ -70,7 +72,8 @@ async function initBucketForTests() {
             Key: testConfig.objectKey,
             Body: testConfig.objectData,
         });
-        await s3client.send(putObjectCommand);
+        const result = await s3client.send(putObjectCommand);
+        testConfig.versionID = result.VersionId!;
     } catch (error: any) {
         assert.fail(`Failed to initialize bucket for tests: ${error}`);
     }
@@ -79,11 +82,13 @@ async function initBucketForTests() {
 export function createTestClient(): {
     backbeatRoutesClient: BackbeatRoutesClient,
     bucketQuotaClient: BucketQuotaClient,
+    proxyBackbeatApisClient: ProxyBackbeatApisClient,
     s3client: S3Client
     } {
     return {
         backbeatRoutesClient: new BackbeatRoutesClient(config),
         bucketQuotaClient: new BucketQuotaClient(config),
+        proxyBackbeatApisClient: new ProxyBackbeatApisClient(config),
         s3client,
     };
 }

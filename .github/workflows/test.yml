@@ -92,3 +92,42 @@ jobs:
       - name: Stop Cloudserver
         if: always()
         run: docker compose -f .github/docker-compose.cloudserver-metadata.yml down
+
+  test-backbeat-apis:
+    name: Test backbeat apis
+    runs-on: ubuntu-24.04
+    needs: lint
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+
+      - name: Setup and Build
+        uses: ./.github/actions/setup-and-build
+
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ github.token }}
+
+      - name: Start Backbeat with CloudServer
+        run: docker compose -f .github/docker-compose.backbeat.yml up -d
+
+      - name: Wait for Cloudserver to be ready
+        run: |
+          set -o pipefail
+          bash .github/scripts/wait_for_local_port.bash 8000 40
+
+      - name: Wait for Backbeat API to be ready
+        run: |
+          set -o pipefail
+          bash .github/scripts/wait_for_local_port.bash 8900 60
+
+      - name: Run backbeat apis tests
+        run: yarn test:backbeat-apis
+
+      - name: Stop Backbeat and Cloudserver
+        if: always()
+        run: docker compose -f .github/docker-compose.backbeat.yml down

@@ -18,3 +18,11 @@ export function describeForMetadataBackend(name: string, fn: () => void): void {
         describe.skip(`${name} (tests skipped: metadata backend only)`, fn);
     }
 }
+
+export function describeForBackbeatSetup(name: string, fn: () => void): void {
+    if (process.env.BACKBEAT_SETUP === 'true') {
+        describe(name, fn);
+    } else {
+        describe.skip(`${name} (tests skipped: backbeat setup required)`, fn);
+    }
+}
