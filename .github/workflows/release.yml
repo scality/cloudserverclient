@@ -69,3 +69,17 @@ jobs:
 
           # Push the tag to the repository
           git push origin $TAG_NAME
+
+          # Export tag name for next step
+          echo "tag_name=$TAG_NAME" >> $GITHUB_OUTPUT
+        id: create_tag
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.create_tag.outputs.tag_name }}
+          name: Release ${{ steps.create_tag.outputs.tag_name }}
+          draft: false
+          prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
