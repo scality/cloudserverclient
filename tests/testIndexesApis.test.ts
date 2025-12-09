@@ -20,9 +20,9 @@ describe('CloudServer Indexes API Tests', () => {
     it('should test PutBucketIndexes', async () => {
         const indexData = JSON.stringify([
             {
-                name: "testIndex1",
+                name: 'testIndex1',
                 keys: [
-                    { order: 1, key: "metadata.userId" }
+                    { order: 1, key: 'metadata.userId' }
                 ]
             }
         ]);
@@ -48,9 +48,9 @@ describe('CloudServer Indexes API Tests', () => {
     it('should test DeleteBucketIndexes and verify deletion', async () => {
         const indexesToDelete = JSON.stringify([
             {
-                name: "testIndex1",
+                name: 'testIndex1',
                 keys: [
-                    { order: 1, key: "metadata.userId" }
+                    { order: 1, key: 'metadata.userId' }
                 ]
             }
         ]);

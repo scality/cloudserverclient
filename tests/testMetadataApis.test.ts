@@ -29,13 +29,13 @@ describe('CloudServer Metadata API Tests', () => {
 
     it('should test PutMetadata API', async () => {
         const metadataObj = {
-            "content-length": 1000,
-            "content-type": "text/plain",
-            "x-amz-meta-custom": "test-valuee",
-            "last-modified": new Date().toISOString(),
-            "etag": "\"d41d8cd98f00b204e9800998ecf8427e\"",
-            "x-amz-version-id": "null",
-            "replicationInfo": {}
+            'content-length': 1000,
+            'content-type': 'text/plain',
+            'x-amz-meta-custom': 'test-valuee',
+            'last-modified': new Date().toISOString(),
+            'etag': '"d41d8cd98f00b204e9800998ecf8427e"',
+            'x-amz-version-id': 'null',
+            'replicationInfo': {}
         };
         
         const metadataString = JSON.stringify(metadataObj);

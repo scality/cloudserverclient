@@ -11,7 +11,7 @@ import {
     BatchDeleteCommand,
     addContentLengthMiddleware
 } from '../src/index';
-import { S3Client, GetObjectCommand as s3getCommand } from '@aws-sdk/client-s3';
+import { S3Client, GetObjectCommand as S3getCommand } from '@aws-sdk/client-s3';
 import { createTestClient, testConfig } from './testSetup';
 import assert from 'assert';
 
@@ -24,7 +24,7 @@ describe('CloudServer API Tests', () => {
     });
 
     it('should test PutData', async () => {
-        const command = new s3getCommand({
+        const command = new S3getCommand({
             Bucket: testConfig.bucketName,
             Key: testConfig.objectKey,
         });
@@ -77,19 +77,19 @@ describe('CloudServer API Tests', () => {
     it('should test BatchDelete', async () => {
         const locations: BatchDeleteLocation[] = [
             {
-                dataStoreName: "mem", 
-                key: "aaaa1",
+                dataStoreName: 'mem',
+                key: 'aaaa1',
                 size: 8,
-                dataStoreVersionId: "v1"
+                dataStoreVersionId: 'v1'
             }
         ];
         const batchDeleteInput: BatchDeleteInput = {
             Bucket: testConfig.bucketName,
             Key: testConfig.objectKey,
             IfUnmodifiedSince: new Date().toISOString(),
-            StorageClass: "STANDARD",
-            Tags: JSON.stringify({ "somekey": "test" }),
-            ContentType: "application/octet-stream",
+            StorageClass: 'STANDARD',
+            Tags: JSON.stringify({ somekey: 'test' }),
+            ContentType: 'application/octet-stream',
             Locations: locations
         };
         

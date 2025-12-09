@@ -28,18 +28,18 @@ describe('CloudServer Raft API Tests', () => {
         };
         const getRaftIdCommand = new GetRaftIdCommand(getRaftIdInput);
         const raftIdData = await client.send(getRaftIdCommand);
-        assert.strictEqual(raftIdData.RaftId, '1')
+        assert.strictEqual(raftIdData.RaftId, '1');
     });
 
     it('should test GetRaftBuckets API', async () => {
         // Run Cloudserver with : S3VAULT=mem S3METADATA=mongodb S3DATA=mem REMOTE_MANAGEMENT_DISABLE=true yarn start
         const getRaftBucketsInput: GetRaftBucketsInput = {
-            LogId: "1",
+            LogId: '1',
         };
         const getRaftBucketsCommand = new GetRaftBucketsCommand(getRaftBucketsInput);
         const raftBucketsData = await client.send(getRaftBucketsCommand);
         const raftBucketsDataAny: any = raftBucketsData.Buckets as any;
-        assert.ok(raftBucketsDataAny.length >= 1)
+        assert.ok(raftBucketsDataAny.length >= 1);
     });
 
     it('should test GetRaftLog API', async () => {
@@ -58,7 +58,7 @@ describe('CloudServer Raft API Tests', () => {
             }
         }
         const getRaftLogInput: GetRaftLogInput = {
-            LogId: "1",
+            LogId: '1',
             Begin: 1,
             Limit: 2,
         };
@@ -86,7 +86,7 @@ describe('CloudServer Raft API Tests', () => {
             headerParser.on('data', (info: any) => {
                 recordStream.removeAllListeners('error');
                 return done(null, {
-                    info: info,
+                    info,
                     log: recordStream,
                 });
             });

@@ -44,11 +44,8 @@ describe('CloudServer test error handling', () => {
             const commandDelete = new MultipleBackendDeleteObjectCommand(deleteInput);
             await client.send(commandDelete);
         } catch (err: any) {
-            console.log('Error:', err);
-            console.log('Error name:', err.name);
-            console.log('Error message:', err.message);
-            console.log('Error code:', err.$metadata?.httpStatusCode);
-            console.log('Error rawBody:', err.rawBody);
+            assert.strictEqual(err.name, 'NoSuchKey');            
+            assert.strictEqual(err.$metadata?.httpStatusCode, 404);
         }
     });
 });

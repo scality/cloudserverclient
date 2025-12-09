@@ -50,7 +50,7 @@ export function createCustomErrorMiddleware() {
                         message: result.Error?.Message,
                         requestId: result.Error?.RequestId,
                     };
-                } catch (parseError) {
+                } catch (_parseError) {
                     return {
                         code: null,
                         message: 'Malformed XML error response',
@@ -90,7 +90,7 @@ export function createCustomErrorMiddleware() {
 
                 const htmlError: any = new CloudserverServiceException({
                     name: `HTML ${response?.reason || 'Error'}`,
-                    message: message,
+                    message,
                     $fault: statusCode >= 500 ? 'server' : 'client',
                     $metadata: error.$metadata || {},
                     $response: error.$response,

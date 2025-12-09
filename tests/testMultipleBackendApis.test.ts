@@ -56,8 +56,8 @@ describe('CloudServer Multiple Backend API Tests', () => {
                 'another-meta': 'another-value'
             }),
             Tags: JSON.stringify({
-                'tag1': 'value1',
-                'tag2': 'value2'
+                tag1: 'value1',
+                tag2: 'value2'
             }),
             StorageClass: 'us-east-1',
             StorageType: 'file',
@@ -76,7 +76,8 @@ describe('CloudServer Multiple Backend API Tests', () => {
         assert.ok(location.dataStoreETag, 'dataStoreETag should exist');
         assert.ok(
             location.dataStoreETag.includes(etag),
-            `dataStoreETag should contain the original etag. Expected to include: ${etag}, got: ${location.dataStoreETag}`
+            `dataStoreETag should contain the original etag.
+            Expected to include: ${etag}, got: ${location.dataStoreETag}`
         );
 
         const deleteInput: MultipleBackendDeleteObjectInput = {
@@ -97,7 +98,7 @@ describe('CloudServer Multiple Backend API Tests', () => {
         };
         const getCommand = new GetObjectCommand(getInput);
         const getData = await client.send(getCommand);
-        const dataBody = await getData.Body.transformToString()
+        const dataBody = await getData.Body.transformToString();
         const bodyBuffer = Buffer.from(dataBody);
         const contentMD5 = crypto.createHash('md5').update(bodyBuffer).digest('hex');
         const putInput: MultipleBackendPutObjectInput = {
@@ -111,8 +112,8 @@ describe('CloudServer Multiple Backend API Tests', () => {
                 'another-meta': 'another-value'
             }),
             Tags: JSON.stringify({
-                'tag1': 'value1',
-                'tag2': 'value2'
+                tag1: 'value1',
+                tag2: 'value2'
             }),
             StorageClass: 'us-east-1',
             StorageType: 'file',
@@ -152,13 +153,13 @@ describe('CloudServer Multiple Backend API Tests', () => {
             StorageClass: 'us-east-1',
             StorageType: 'file',
             Tags: JSON.stringify({
-                'Environment': 'Test',
-                'Project': 'Cloudserver'
+                Environment: 'Test',
+                Project: 'Cloudserver'
             }),
             Body: tagData,
             DataStoreVersionId: 'v1',
-            SourceBucket: "aBucket",
-            ReplicationEndpointSite: "aVal"
+            SourceBucket: 'aBucket',
+            ReplicationEndpointSite: 'aVal'
         };
         const putTaggingCommand = new MultipleBackendPutObjectTaggingCommand(putTaggingInput);
         const putTaggingResult = await client.send(putTaggingCommand);
