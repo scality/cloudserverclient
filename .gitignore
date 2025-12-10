@@ -80,8 +80,10 @@ out
 
 # Nuxt.js build / generate output
 .nuxt
-# For now, the `dist` folder is commited: so we should not ignore it
-#dist
+
+# Build output
+build/
+dist/
 
 # Gatsby files
 .cache/
