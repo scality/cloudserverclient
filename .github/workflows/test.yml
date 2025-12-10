@@ -27,6 +27,12 @@ jobs:
       - name: Install dependencies
         run: yarn install --frozen-lockfile
 
+      - name: Setup Smithy CLI
+        uses: ./.github/actions/setup-smithy
+
+      - name: Build
+        run: yarn build
+
       - name: TypeScript typecheck
         run: yarn typecheck
 
@@ -50,6 +56,12 @@ jobs:
 
       - name: Install dependencies
         run: yarn install --frozen-lockfile
+
+      - name: Setup Smithy CLI
+        uses: ./.github/actions/setup-smithy
+
+      - name: Build
+        run: yarn build
 
       - name: Start Cloudserver with MongoDB backend
         run: docker compose -f .github/docker-compose.cloudserver-mongo.yml up -d
@@ -83,6 +95,12 @@ jobs:
 
       - name: Install dependencies
         run: yarn install --frozen-lockfile
+
+      - name: Setup Smithy CLI
+        uses: ./.github/actions/setup-smithy
+
+      - name: Build
+        run: yarn build
 
       - name: Login to GitHub Container Registry
         uses: docker/login-action@v3
