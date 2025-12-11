@@ -1,0 +1,32 @@
+name: 'Setup and Build'
+description: 'Common setup steps: install dependencies, setup Smithy, cache, and build'
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+        cache: 'yarn'
+
+    - name: Install dependencies
+      shell: bash
+      run: yarn install --frozen-lockfile
+
+    - name: Setup Smithy CLI
+      uses: ./.github/actions/setup-smithy
+
+    - name: Cache build output
+      uses: actions/cache@v4
+      with:
+        path: |
+          build/
+          dist/
+        key: build-${{ hashFiles('models/**', 'service/**', 'smithy-build.json') }}
+        restore-keys: |
+          build-
+
+    - name: Build
+      shell: bash
+      run: yarn build

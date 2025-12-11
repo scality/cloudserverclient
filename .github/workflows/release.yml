@@ -24,20 +24,8 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-          cache: 'yarn'
-
-      - name: Install dependencies
-        run: yarn install --frozen-lockfile
-
-      - name: Setup Smithy CLI
-        uses: ./.github/actions/setup-smithy
-
-      - name: Build project
-        run: yarn build
+      - name: Setup and Build
+        uses: ./.github/actions/setup-and-build
 
       - name: Create Tag with Build Artifacts
         run: |

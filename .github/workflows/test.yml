@@ -18,30 +18,8 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-          cache: 'yarn'
-
-      - name: Install dependencies
-        run: yarn install --frozen-lockfile
-
-      - name: Setup Smithy CLI
-        uses: ./.github/actions/setup-smithy
-
-      - name: Cache build output
-        uses: actions/cache@v4
-        with:
-          path: |
-            build/
-            dist/
-          key: build-${{ hashFiles('models/**', 'service/**', 'smithy-build.json') }}
-          restore-keys: |
-            build-
-
-      - name: Build
-        run: yarn build
+      - name: Setup and Build
+        uses: ./.github/actions/setup-and-build
 
       - name: TypeScript typecheck
         run: yarn typecheck
@@ -58,30 +36,8 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-          cache: 'yarn'
-
-      - name: Install dependencies
-        run: yarn install --frozen-lockfile
-
-      - name: Setup Smithy CLI
-        uses: ./.github/actions/setup-smithy
-
-      - name: Cache build output
-        uses: actions/cache@v4
-        with:
-          path: |
-            build/
-            dist/
-          key: build-${{ hashFiles('models/**', 'service/**', 'smithy-build.json') }}
-          restore-keys: |
-            build-
-
-      - name: Build
-        run: yarn build
+      - name: Setup and Build
+        uses: ./.github/actions/setup-and-build
 
       - name: Start Cloudserver with MongoDB backend
         run: docker compose -f .github/docker-compose.cloudserver-mongo.yml up -d
@@ -107,30 +63,8 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-          cache: 'yarn'
-
-      - name: Install dependencies
-        run: yarn install --frozen-lockfile
-
-      - name: Setup Smithy CLI
-        uses: ./.github/actions/setup-smithy
-
-      - name: Cache build output
-        uses: actions/cache@v4
-        with:
-          path: |
-            build/
-            dist/
-          key: build-${{ hashFiles('models/**', 'service/**', 'smithy-build.json') }}
-          restore-keys: |
-            build-
-
-      - name: Build
-        run: yarn build
+      - name: Setup and Build
+        uses: ./.github/actions/setup-and-build
 
       - name: Login to GitHub Container Registry
         uses: docker/login-action@v3
