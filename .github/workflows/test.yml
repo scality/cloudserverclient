@@ -30,6 +30,16 @@ jobs:
       - name: Setup Smithy CLI
         uses: ./.github/actions/setup-smithy
 
+      - name: Cache build output
+        uses: actions/cache@v4
+        with:
+          path: |
+            build/
+            dist/
+          key: build-${{ hashFiles('models/**', 'service/**', 'smithy-build.json') }}
+          restore-keys: |
+            build-
+
       - name: Build
         run: yarn build
 
@@ -59,6 +69,16 @@ jobs:
 
       - name: Setup Smithy CLI
         uses: ./.github/actions/setup-smithy
+
+      - name: Cache build output
+        uses: actions/cache@v4
+        with:
+          path: |
+            build/
+            dist/
+          key: build-${{ hashFiles('models/**', 'service/**', 'smithy-build.json') }}
+          restore-keys: |
+            build-
 
       - name: Build
         run: yarn build
@@ -98,6 +118,16 @@ jobs:
 
       - name: Setup Smithy CLI
         uses: ./.github/actions/setup-smithy
+
+      - name: Cache build output
+        uses: actions/cache@v4
+        with:
+          path: |
+            build/
+            dist/
+          key: build-${{ hashFiles('models/**', 'service/**', 'smithy-build.json') }}
+          restore-keys: |
+            build-
 
       - name: Build
         run: yarn build
