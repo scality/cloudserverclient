@@ -17,6 +17,15 @@ yarn build
 ### Local testing
 
 1. Install dependencies & build the smithy client: `yarn build`
+   
+   If you want to try a release build in another project, you can also push your branch after adding this push condition in `release.yml`:
+   ```yaml
+   # Uncomment to test your work as a release before it's merged
+   push:
+     branches:
+       - improvement/CLDSRVCLT-X
+   ```
+
 2. Start CloudServer: `S3VAULT=mem S3METADATA=mem S3DATA=mem REMOTE_MANAGEMENT_DISABLE=true yarn start`
 Some tests require different cloudserver setup :
 For example : tests/testIndexesApis.test.ts : `S3METADATA=mongodb`
