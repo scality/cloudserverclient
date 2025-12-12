@@ -1,66 +1,86 @@
 ---
-name: release
-run-name: release ${{ inputs.tag }}
+name: Release
+run-name: Release
 
 on:
-  # Uncomment to test your work as a release before it's merged
-  # push:
-  #   branches:
-  #     - improvement/CLDSRVCLT-X
+  # For testing - remove before merging
+  push:
+    branches:
+      - improvement/CLDSRVCLT-7
   workflow_dispatch:
-    inputs:
-      tag:
-        description: 'Tag to be released (e.g., 1.0.0)'
-        required: true
 
 jobs:
-  build-and-tag:
-    name: Build and tag
+  build:
+    name: Build
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
-    
+    outputs:
+      version: ${{ steps.package-version.outputs.version }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      - name: Get version from package.json
+        id: package-version
+        run: echo "version=$(node -p "require('./package.json').version")" >> $GITHUB_OUTPUT
+
       - name: Setup and Build
         uses: ./.github/actions/setup-and-build
 
-      - name: Create Tag with Build Artifacts
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-artifacts
+          path: |
+            dist/
+            build/
+
+  publish-npm:
+    name: Publish to npm registry
+    runs-on: ubuntu-latest
+    needs: build
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Download build artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: build-artifacts
+
+      - name: Setup Node.js for npm registry
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          registry-url: 'https://registry.npmjs.org'
+
+      - name: Publish to npm with provenance
+        run: npm publish --provenance --tag latest
+
+  create-release:
+    name: Create GitHub Release
+    runs-on: ubuntu-latest
+    needs: [build, publish-npm]
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Create Git Tag
         run: |
-          # Configure git user to the GitHub Actions bot
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
-
-          # Force add the build folders (even if they are in .gitignore)
-          git add -f dist build
-
-          # Determine tag name
-          TAG_NAME="${{ inputs.tag }}"
-          if [ -z "$TAG_NAME" ]; then
-            TAG_NAME="test-${{ github.sha }}"
-          fi
-
-          # Commit the build artifacts
-          git commit -m "Build artifacts for version $TAG_NAME"
-
-          # Create the tag
-          git tag $TAG_NAME
-
-          # Push the tag to the repository
-          git push origin $TAG_NAME
-
-          # Export tag name for next step
-          echo "tag_name=$TAG_NAME" >> $GITHUB_OUTPUT
-        id: create_tag
+          git tag ${{ needs.build.outputs.version }}
+          git push origin ${{ needs.build.outputs.version }}
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: ${{ steps.create_tag.outputs.tag_name }}
-          name: Release ${{ steps.create_tag.outputs.tag_name }}
-          draft: false
-          prerelease: false
+          tag_name: ${{ needs.build.outputs.version }}
+          name: Release ${{ needs.build.outputs.version }}
+          generate_release_notes: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
