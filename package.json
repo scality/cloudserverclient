@@ -11,6 +11,10 @@
     "dist",
     "build/smithy/source/typescript-codegen"
   ],
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org"
+  },
   "scripts": {
     "clean:build": "rm -rf build dist",
     "build:smithy": "smithy build",
