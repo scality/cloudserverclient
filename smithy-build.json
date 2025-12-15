@@ -7,10 +7,24 @@
             "software.amazon.smithy.typescript:smithy-aws-typescript-codegen:0.34.0"
         ]
     },
-    "plugins": {
-        "typescript-codegen": {
-            "package": "@scality/cloudserverclient",
-            "packageVersion": "1.0.0"
+    "projections": {
+        "cloudserver": {
+            "plugins": {
+                "typescript-codegen": {
+                    "service": "cloudserver.client#cloudserver",
+                    "package": "@scality/cloudserverclient",
+                    "packageVersion": "1.0.0"
+                }
+            }
+        },
+        "cloudserverBucketQuota": {
+            "plugins": {
+                "typescript-codegen": {
+                    "service": "cloudserver.bucketquota#CloudserverBucketQuota",
+                    "package": "@scality/cloudserverclient-bucket",
+                    "packageVersion": "1.0.0"
+                }
+            }
         }
     }
 }

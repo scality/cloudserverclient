@@ -7,9 +7,20 @@
   "description": "Smithy-generated TypeScript client for Cloudserver's internal APIs",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    },
+    "./*": {
+      "types": "./dist/*.d.ts",
+      "default": "./dist/*.js"
+    }
+  },
   "files": [
     "dist",
-    "build/smithy/source/typescript-codegen"
+    "build/smithy/cloudserver/typescript-codegen",
+    "build/smithy/cloudserverBucketQuota/typescript-codegen"
   ],
   "publishConfig": {
     "access": "public",
@@ -18,9 +29,10 @@
   "scripts": {
     "clean:build": "rm -rf build dist",
     "build:smithy": "smithy build",
-    "build:generated": "cd build/smithy/source/typescript-codegen && yarn install && yarn build",
+    "build:generated": "cd build/smithy/cloudserver/typescript-codegen && yarn install && yarn build",
+    "build:generated:bucketQuota": "cd build/smithy/cloudserverBucketQuota/typescript-codegen && yarn install && yarn build",
     "build:wrapper": "tsc",
-    "build": "yarn install && yarn clean:build && yarn build:smithy && yarn build:generated && yarn build:wrapper",
+    "build": "yarn install && yarn clean:build && yarn build:smithy && yarn build:generated && yarn build:generated:bucketQuota && yarn build:wrapper",
     "test": "jest",
     "test:indexes": "jest tests/testIndexesApis.test.ts",
     "test:error-handling": "jest tests/testErrorHandling.test.ts",
@@ -29,7 +41,8 @@
     "test:lifecycle": "jest tests/testLifecycleApis.test.ts",
     "test:metadata": "jest tests/testMetadataApis.test.ts",
     "test:raft": "jest tests/testRaftApis.test.ts",
-    "test:mongo-backend": "yarn test:indexes && yarn test:error-handling && yarn test:multiple-backend",
+    "test:bucketQuotas": "jest tests/testQuotaApis.test.ts",
+    "test:mongo-backend": "yarn test:indexes && yarn test:error-handling && yarn test:multiple-backend && yarn test:bucketQuotas",
     "test:metadata-backend": "yarn test:api && yarn test:lifecycle && yarn test:metadata && yarn test:raft",
     "lint": "eslint src tests",
     "typecheck": "tsc --noEmit"

@@ -1,5 +1,5 @@
 import { XMLParser } from 'fast-xml-parser';
-import { CloudserverServiceException } from '../build/smithy/source/typescript-codegen';
+import { CloudserverServiceException } from '../build/smithy/cloudserver/typescript-codegen';
 
 /**
  * Adds middleware to manually set the Content-Length header on a command.

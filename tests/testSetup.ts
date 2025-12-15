@@ -1,9 +1,9 @@
 import https from 'https';
 import assert from 'assert';
-import { CloudserverClient, CloudserverClientConfig } from '../src/index';
+import { CloudserverClient, CloudserverClientConfig } from '../src/clients/cloudserver';
 import { S3Client, PutObjectCommand, CreateBucketCommand, PutBucketVersioningCommand } from '@aws-sdk/client-s3';
 import { AwsCredentialIdentity, AwsCredentialIdentityProvider } from '@aws-sdk/types';
-
+import { BucketQuotaClient } from '../src/clients/bucketQuota';
 jest.setTimeout(30000);
 
 const credentialsProvider: AwsCredentialIdentityProvider = async (): Promise<AwsCredentialIdentity> => ({
@@ -76,9 +76,14 @@ async function initBucketForTests() {
     }
 }
 
-export function createTestClient(): {client: CloudserverClient, s3client: S3Client} {
+export function createTestClient(): {
+    client: CloudserverClient,
+    bucketQuotaClient: BucketQuotaClient,
+    s3client: S3Client
+    } {
     return {
         client: new CloudserverClient(config),
+        bucketQuotaClient: new BucketQuotaClient(config),
         s3client,
     };
 }
