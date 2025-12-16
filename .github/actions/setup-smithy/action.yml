@@ -6,9 +6,11 @@ runs:
   steps:
     - name: Install Smithy CLI
       shell: bash
-      env:
-        SMITHY_VERSION: '1.61.0'
       run: |
+        # Extract Smithy version from smithy-build.json
+        SMITHY_VERSION=$(jq -r '.maven.dependencies[] | select(contains("smithy-aws-traits")) | split(":")[2]' smithy-build.json)
+        echo "Installing Smithy CLI version ${SMITHY_VERSION}"
+        
         mkdir -p smithy-install/smithy
         curl -L https://github.com/smithy-lang/smithy/releases/download/${SMITHY_VERSION}/smithy-cli-linux-x86_64.zip -o smithy-install/smithy-cli-linux-x86_64.zip
         unzip -qo smithy-install/smithy-cli-linux-x86_64.zip -d smithy-install
