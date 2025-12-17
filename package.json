@@ -19,8 +19,7 @@
   },
   "files": [
     "dist",
-    "build/smithy/cloudserverBackbeatRoutes/typescript-codegen",
-    "build/smithy/cloudserverBucketQuota/typescript-codegen"
+    "build/smithy/*/typescript-codegen"
   ],
   "publishConfig": {
     "access": "public",
@@ -42,7 +41,8 @@
     "test:metadata": "jest tests/testMetadataApis.test.ts",
     "test:raft": "jest tests/testRaftApis.test.ts",
     "test:bucketQuotas": "jest tests/testQuotaApis.test.ts",
-    "test:mongo-backend": "yarn test:indexes && yarn test:error-handling && yarn test:multiple-backend && yarn test:bucketQuotas",
+    "test:s3extended": "jest tests/testS3ExtendedApis.test.ts",
+    "test:mongo-backend": "yarn test:indexes && yarn test:error-handling && yarn test:multiple-backend && yarn test:bucketQuotas && yarn test:s3extended",
     "test:metadata-backend": "yarn test:api && yarn test:lifecycle && yarn test:metadata && yarn test:raft",
     "lint": "eslint src tests",
     "typecheck": "tsc --noEmit"
