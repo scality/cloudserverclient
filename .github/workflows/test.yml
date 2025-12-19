@@ -12,11 +12,11 @@ permissions:
 jobs:
   lint:
     name: Lint and typecheck
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Setup and Build
         uses: ./.github/actions/setup-and-build
@@ -29,12 +29,12 @@ jobs:
 
   test-mongodb-backend:
     name: Test with MongoDB backend
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     needs: lint
     
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Setup and Build
         uses: ./.github/actions/setup-and-build
@@ -56,12 +56,12 @@ jobs:
 
   test-metadata-backend:
     name: Test with Scality metadata backend
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     needs: lint
     
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Setup and Build
         uses: ./.github/actions/setup-and-build
