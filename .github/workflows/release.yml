@@ -4,6 +4,9 @@ run-name: Release
 
 on:
   workflow_dispatch:
+  push:
+    branches:
+      - 'improvement/**'
 
 jobs:
   build:
