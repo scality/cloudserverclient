@@ -5,9 +5,9 @@ runs:
   using: 'composite'
   steps:
     - name: Setup Node.js
-      uses: actions/setup-node@v4
+      uses: actions/setup-node@v6
       with:
-        node-version: '20'
+        node-version: '24'
         cache: 'yarn'
 
     - name: Install dependencies
@@ -18,7 +18,7 @@ runs:
       uses: ./.github/actions/setup-smithy
 
     - name: Cache build output
-      uses: actions/cache@v4
+      uses: actions/cache@v5
       with:
         path: |
           build/
