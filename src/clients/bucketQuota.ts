@@ -1,4 +1,3 @@
-import { CloudserverClientConfig } from '../../build/smithy/cloudserver/typescript-codegen';
 import {
     CloudserverBucketQuotaClient,
     CloudserverBucketQuotaClientConfig,
@@ -15,7 +14,7 @@ export {
 } from '../../build/smithy/cloudserverBucketQuota/typescript-codegen';
 
 export class BucketQuotaClient extends CloudserverBucketQuotaClient {
-    constructor(config: CloudserverClientConfig | CloudserverBucketQuotaClientConfig) {
+    constructor(config: CloudserverBucketQuotaClientConfig) {
         super(config);
     }
 }

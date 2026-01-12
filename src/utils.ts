@@ -1,5 +1,7 @@
 import { XMLParser } from 'fast-xml-parser';
-import { CloudserverServiceException } from '../build/smithy/cloudserver/typescript-codegen';
+import {
+    CloudserverBackbeatRoutesServiceException
+} from '../build/smithy/cloudserverBackbeatRoutes/typescript-codegen';
 
 /**
  * Adds middleware to manually set the Content-Length header on a command.
@@ -68,7 +70,7 @@ export function createCustomErrorMiddleware() {
                 const xml = body?.toString() || '';
                 const errorInfo = parseXmlError(xml);
                 
-                const xmlError: any = new CloudserverServiceException({
+                const xmlError: any = new CloudserverBackbeatRoutesServiceException({
                     name: errorInfo.code || error.name,
                     message: errorInfo.message || 'XML error response',
                     $fault: statusCode >= 500 ? 'server' : 'client',
@@ -88,7 +90,7 @@ export function createCustomErrorMiddleware() {
                 const title = html.match(/<title[^>]*>([^<]+)<\/title>/i);
                 const message = title && title[1] || 'HTML error response';
 
-                const htmlError: any = new CloudserverServiceException({
+                const htmlError: any = new CloudserverBackbeatRoutesServiceException({
                     name: `HTML ${response?.reason || 'Error'}`,
                     message,
                     $fault: statusCode >= 500 ? 'server' : 'client',

@@ -1,5 +1,5 @@
 import { 
-    CloudserverClient,
+    BackbeatRoutesClient,
     MultipleBackendPutObjectInput,
     MultipleBackendPutObjectCommand,
     MultipleBackendDeleteObjectInput,
@@ -25,10 +25,10 @@ import assert from 'assert';
 import crypto from 'crypto';
 
 describe('CloudServer Multiple Backend API Tests', () => {
-    let client: CloudserverClient;
+    let backbeatRoutesClient: BackbeatRoutesClient;
 
     beforeAll(() => {
-        ({client} = createTestClient());
+        ({backbeatRoutesClient} = createTestClient());
     });
 
     it('should test MultipleBackendPutObject and delete API', async () => {
@@ -39,7 +39,7 @@ describe('CloudServer Multiple Backend API Tests', () => {
             RequestUids: '123',
         };
         const getCommand = new GetObjectCommand(getInput);
-        const getData = await client.send(getCommand);
+        const getData = await backbeatRoutesClient.send(getCommand);
         const etag = getData.ETag?.replace(/"/g, '') || '';
         
         const incomingMsg = getData.Body as any;
@@ -69,7 +69,7 @@ describe('CloudServer Multiple Backend API Tests', () => {
             command,
             contentLength
         );
-        const result = await client.send(command);
+        const result = await backbeatRoutesClient.send(command);
         
         assert.ok(result.location && result.location.length > 0, 'Location should not be empty');
         const location = result.location[0];
@@ -87,7 +87,7 @@ describe('CloudServer Multiple Backend API Tests', () => {
             StorageType: 'file'
         };
         const commandDelete = new MultipleBackendDeleteObjectCommand(deleteInput);
-        const deleteResult = await client.send(commandDelete);
+        const deleteResult = await backbeatRoutesClient.send(commandDelete);
         assert.strictEqual(deleteResult.$metadata.httpStatusCode, 200);
     });
 
@@ -97,7 +97,7 @@ describe('CloudServer Multiple Backend API Tests', () => {
             Key: testConfig.objectKey,
         };
         const getCommand = new GetObjectCommand(getInput);
-        const getData = await client.send(getCommand);
+        const getData = await backbeatRoutesClient.send(getCommand);
         const dataBody = await getData.Body.transformToString();
         const bodyBuffer = Buffer.from(dataBody);
         const contentMD5 = crypto.createHash('md5').update(bodyBuffer).digest('hex');
@@ -121,7 +121,7 @@ describe('CloudServer Multiple Backend API Tests', () => {
         };
         
         const command = new MultipleBackendPutObjectCommand(putInput as any);
-        const result = await client.send(command);
+        const result = await backbeatRoutesClient.send(command);
         const locationKey = result.location?.[0]?.key || '';
 
         const headInput: MultipleBackendHeadObjectInput = {
@@ -133,7 +133,7 @@ describe('CloudServer Multiple Backend API Tests', () => {
             }])
         };
         const headCommand = new MultipleBackendHeadObjectCommand(headInput);
-        const headResult = await client.send(headCommand);
+        const headResult = await backbeatRoutesClient.send(headCommand);
         assert.strictEqual(headResult.$metadata.httpStatusCode, 200);
     });
 
@@ -162,7 +162,7 @@ describe('CloudServer Multiple Backend API Tests', () => {
             ReplicationEndpointSite: 'aVal'
         };
         const putTaggingCommand = new MultipleBackendPutObjectTaggingCommand(putTaggingInput);
-        const putTaggingResult = await client.send(putTaggingCommand);
+        const putTaggingResult = await backbeatRoutesClient.send(putTaggingCommand);
         assert.strictEqual(putTaggingResult.$metadata.httpStatusCode, 200);
     });
 
@@ -179,7 +179,7 @@ describe('CloudServer Multiple Backend API Tests', () => {
         };
         
         const deleteTaggingCommand = new MultipleBackendDeleteObjectTaggingCommand(deleteTaggingInput);
-        const deleteTaggingResult = await client.send(deleteTaggingCommand);
+        const deleteTaggingResult = await backbeatRoutesClient.send(deleteTaggingCommand);
         assert.strictEqual(deleteTaggingResult.$metadata.httpStatusCode, 200);
     });
 
@@ -198,7 +198,7 @@ describe('CloudServer Multiple Backend API Tests', () => {
         };
         
         const initiateMPUCommand = new MultipleBackendInitiateMPUCommand(initiateMPUInput);
-        const initiateMPUResult = await client.send(initiateMPUCommand);
+        const initiateMPUResult = await backbeatRoutesClient.send(initiateMPUCommand);
         const uploadId = initiateMPUResult.uploadId;
         assert.strictEqual(initiateMPUResult.$metadata.httpStatusCode, 200);
 
@@ -208,7 +208,7 @@ describe('CloudServer Multiple Backend API Tests', () => {
             Key: testConfig.objectKey,
         };
         const getCommand = new GetObjectCommand(getInput);
-        const getData = await client.send(getCommand);
+        const getData = await backbeatRoutesClient.send(getCommand);
         const putPartInput: MultipleBackendPutMPUPartInput = {
             Bucket: testConfig.bucketName,
             Key: `${testConfig.objectKey}-mpu`,
@@ -220,7 +220,7 @@ describe('CloudServer Multiple Backend API Tests', () => {
         };
 
         const putPartCommand = new MultipleBackendPutMPUPartCommand(putPartInput as any);
-        const putPartResult = await client.send(putPartCommand);
+        const putPartResult = await backbeatRoutesClient.send(putPartCommand);
         assert.strictEqual(putPartResult.$metadata.httpStatusCode, 200);
         
         const completeMPUInput: MultipleBackendCompleteMPUInput = {
@@ -238,7 +238,7 @@ describe('CloudServer Multiple Backend API Tests', () => {
             }))
         };
         const completeMPUCommand = new MultipleBackendCompleteMPUCommand(completeMPUInput);
-        const completeMPUResult = await client.send(completeMPUCommand);
+        const completeMPUResult = await backbeatRoutesClient.send(completeMPUCommand);
         assert.strictEqual(completeMPUResult.$metadata.httpStatusCode, 200);
     });
 });

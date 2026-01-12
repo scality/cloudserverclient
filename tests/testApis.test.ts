@@ -1,5 +1,5 @@
 import {
-    CloudserverClient,
+    BackbeatRoutesClient,
     PutDataCommandInput,
     PutDataCommand,
     GetObjectInput,
@@ -16,11 +16,11 @@ import { createTestClient, testConfig } from './testSetup';
 import assert from 'assert';
 
 describe('CloudServer API Tests', () => {
-    let client: CloudserverClient;
+    let backbeatRoutesClient: BackbeatRoutesClient;
     let s3client: S3Client;
 
     beforeAll(() => {
-        ({client, s3client} = createTestClient());
+        ({backbeatRoutesClient, s3client} = createTestClient());
     });
 
     it('should test PutData', async () => {
@@ -44,7 +44,7 @@ describe('CloudServer API Tests', () => {
             command2,
             getData.ContentLength
         );
-        const data = await client.send(command2);
+        const data = await backbeatRoutesClient.send(command2);
         const locationAny: any = data.Location as any;
         assert.ok(locationAny[0].key !== undefined);
     });
@@ -56,7 +56,7 @@ describe('CloudServer API Tests', () => {
             RequestUids: '123',
         };
         const getCommand = new GetObjectCommand(getInput);
-        const getData = await client.send(getCommand);
+        const getData = await backbeatRoutesClient.send(getCommand);
         const bodyStr = await getData.Body.transformToString();
         assert.strictEqual(bodyStr, testConfig.objectData);
     });
@@ -67,7 +67,7 @@ describe('CloudServer API Tests', () => {
             Bucket: testConfig.bucketName,
         };
         const getCommand = new GetObjectListCommand(getInput);
-        const getData = await client.send(getCommand);
+        const getData = await backbeatRoutesClient.send(getCommand);
         const contents = getData.Contents || [];
         assert.strictEqual(Array.isArray(contents), true);
         const found = contents.some(c => c?.key === testConfig.objectKey);
@@ -94,7 +94,7 @@ describe('CloudServer API Tests', () => {
         };
         
         const batchDeleteCommand = new BatchDeleteCommand(batchDeleteInput);
-        const result = await client.send(batchDeleteCommand);
+        const result = await backbeatRoutesClient.send(batchDeleteCommand);
         assert.strictEqual(result.$metadata.httpStatusCode, 200);
     });
 });

@@ -1,6 +1,6 @@
 import https from 'https';
 import assert from 'assert';
-import { CloudserverClient, CloudserverClientConfig } from '../src/clients/cloudserver';
+import { BackbeatRoutesClient, CloudserverBackbeatRoutesClientConfig } from '../src/clients/backbeatRoutes';
 import { S3Client, PutObjectCommand, CreateBucketCommand, PutBucketVersioningCommand } from '@aws-sdk/client-s3';
 import { AwsCredentialIdentity, AwsCredentialIdentityProvider } from '@aws-sdk/types';
 import { BucketQuotaClient } from '../src/clients/bucketQuota';
@@ -12,7 +12,7 @@ const credentialsProvider: AwsCredentialIdentityProvider = async (): Promise<Aws
     sessionToken: '',
 });
 
-const config: CloudserverClientConfig = {
+const config: CloudserverBackbeatRoutesClientConfig = {
     endpoint: 'http://localhost:8000',
     credentials: credentialsProvider,
     region: 'us-east-1',
@@ -77,12 +77,12 @@ async function initBucketForTests() {
 }
 
 export function createTestClient(): {
-    client: CloudserverClient,
+    backbeatRoutesClient: BackbeatRoutesClient,
     bucketQuotaClient: BucketQuotaClient,
     s3client: S3Client
     } {
     return {
-        client: new CloudserverClient(config),
+        backbeatRoutesClient: new BackbeatRoutesClient(config),
         bucketQuotaClient: new BucketQuotaClient(config),
         s3client,
     };

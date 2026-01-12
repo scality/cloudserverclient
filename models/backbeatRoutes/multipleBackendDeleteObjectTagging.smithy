@@ -1,15 +1,17 @@
 $version: "2.0"
-namespace cloudserver.client
+namespace cloudserver.backbeatRoutes
 
-/// Adds or updates tags for an object in multiple backend storage
-@http(method: "POST", uri: "/_/backbeat/multiplebackenddata/{Bucket}/{Key+}?operation=puttagging")
-operation MultipleBackendPutObjectTagging {
-    input: MultipleBackendPutObjectTaggingInput,
-    output: MultipleBackendPutObjectTaggingOutput,
+/// Removes tags from an object in multiple backend storage
+@idempotent
+@suppress(["HttpMethodSemantics.UnexpectedPayload"])
+@http(method: "DELETE", uri: "/_/backbeat/multiplebackenddata/{Bucket}/{Key+}?operation=deleteobjecttagging")
+operation MultipleBackendDeleteObjectTagging {
+    input: MultipleBackendDeleteObjectTaggingInput,
+    output: MultipleBackendDeleteObjectTaggingOutput,
 }
 
 @input
-structure MultipleBackendPutObjectTaggingInput {
+structure MultipleBackendDeleteObjectTaggingInput {
     @httpLabel
     @required
     Bucket: String,
@@ -18,18 +20,15 @@ structure MultipleBackendPutObjectTaggingInput {
     @required
     Key: String,
     
-    @httpHeader("X-Scal-Storage-Type")
-    StorageType: String,
-    
     @httpHeader("X-Scal-Storage-Class")
     @required
     StorageClass: String,
     
+    @httpHeader("X-Scal-Storage-Type")
+    StorageType: String,
+    
     @httpHeader("X-Scal-Data-Store-Version-Id")
     DataStoreVersionId: String,
-    
-    @httpHeader("X-Scal-Tags")
-    Tags: String,
     
     @httpHeader("X-Scal-Source-Bucket")
     SourceBucket: String,
@@ -48,7 +47,7 @@ structure MultipleBackendPutObjectTaggingInput {
 }
 
 @output
-structure MultipleBackendPutObjectTaggingOutput {
-    /// Version ID of the tagged object
+structure MultipleBackendDeleteObjectTaggingOutput {
+    /// Version ID of the object after tag removal
     versionId: String,
 }

@@ -1,5 +1,5 @@
 import { 
-    CloudserverClient,
+    BackbeatRoutesClient,
     MultipleBackendDeleteObjectInput,
     MultipleBackendDeleteObjectCommand,
     GetObjectInput,
@@ -9,10 +9,10 @@ import assert from 'assert';
 import { createTestClient, testConfig } from './testSetup';
 
 describe('CloudServer test error handling', () => {
-    let client: CloudserverClient;
+    let backbeatRoutesClient: BackbeatRoutesClient;
 
     beforeAll(() => {
-        ({client} = createTestClient());
+        ({backbeatRoutesClient} = createTestClient());
     });
 
     it('should test xml parsing', async () => {
@@ -22,7 +22,7 @@ describe('CloudServer test error handling', () => {
                 Key: 'notAKey',
             };
             const getCommand = new GetObjectCommand(getInput);
-            await client.send(getCommand);
+            await backbeatRoutesClient.send(getCommand);
             assert.fail('Expected an error but none was thrown');
         } catch (err: any) {
             assert.strictEqual(err.name, 'NoSuchKey');            
@@ -42,7 +42,7 @@ describe('CloudServer test error handling', () => {
                 StorageType: 'file'
             };
             const commandDelete = new MultipleBackendDeleteObjectCommand(deleteInput);
-            await client.send(commandDelete);
+            await backbeatRoutesClient.send(commandDelete);
         } catch (err: any) {
             assert.strictEqual(err.name, 'NoSuchKey');            
             assert.strictEqual(err.$metadata?.httpStatusCode, 404);

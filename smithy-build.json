@@ -8,10 +8,10 @@
         ]
     },
     "projections": {
-        "cloudserver": {
+        "cloudserverBackbeatRoutes": {
             "plugins": {
                 "typescript-codegen": {
-                    "service": "cloudserver.client#cloudserver",
+                    "service": "cloudserver.backbeatRoutes#CloudserverBackbeatRoutes",
                     "package": "@scality/cloudserverclient",
                     "packageVersion": "1.0.0"
                 }

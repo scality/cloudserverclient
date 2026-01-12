@@ -1,5 +1,5 @@
 import { 
-    CloudserverClient,
+    BackbeatRoutesClient,
     GetRaftIdInput,
     GetRaftIdCommand,
     GetRaftBucketsInput,
@@ -15,10 +15,10 @@ import stream from 'stream';
 import JSONStream from 'JSONStream';
 
 describe('CloudServer Raft API Tests', () => {
-    let client: CloudserverClient;
+    let backbeatRoutesClient: BackbeatRoutesClient;
 
     beforeAll(() => {
-        ({client} = createTestClient());
+        ({backbeatRoutesClient} = createTestClient());
     });
 
     it('should test GetRaftId API', async () => {
@@ -27,7 +27,7 @@ describe('CloudServer Raft API Tests', () => {
             Bucket: testConfig.bucketName,
         };
         const getRaftIdCommand = new GetRaftIdCommand(getRaftIdInput);
-        const raftIdData = await client.send(getRaftIdCommand);
+        const raftIdData = await backbeatRoutesClient.send(getRaftIdCommand);
         assert.strictEqual(raftIdData.RaftId, '1');
     });
 
@@ -37,7 +37,7 @@ describe('CloudServer Raft API Tests', () => {
             LogId: '1',
         };
         const getRaftBucketsCommand = new GetRaftBucketsCommand(getRaftBucketsInput);
-        const raftBucketsData = await client.send(getRaftBucketsCommand);
+        const raftBucketsData = await backbeatRoutesClient.send(getRaftBucketsCommand);
         const raftBucketsDataAny: any = raftBucketsData.Buckets as any;
         assert.ok(raftBucketsDataAny.length >= 1);
     });
@@ -63,7 +63,7 @@ describe('CloudServer Raft API Tests', () => {
             Limit: 2,
         };
         const getRaftLogCommand = new GetRaftLogCommand(getRaftLogInput);
-        const raftLogData = await client.send(getRaftLogCommand);
+        const raftLogData = await backbeatRoutesClient.send(getRaftLogCommand);
         
         function getRaftLogStreaming(done: any) {
             const recordStream = new ListRecordStream();
@@ -132,7 +132,7 @@ describe('CloudServer Raft API Tests', () => {
             Bucket: testConfig.bucketName,
         };
         const getBucketCseqCommand = new GetBucketCseqCommand(getBucketCseqInput);
-        const bucketCseqData = await client.send(getBucketCseqCommand);
+        const bucketCseqData = await backbeatRoutesClient.send(getBucketCseqCommand);
         assert.ok(bucketCseqData.CseqInfo && Array.isArray(bucketCseqData.CseqInfo));
         assert.ok(bucketCseqData.CseqInfo.length > 0, 'CseqInfo should not be empty');
     });

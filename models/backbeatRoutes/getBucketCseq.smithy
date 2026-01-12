@@ -1,5 +1,5 @@
 $version: "2.0"
-namespace cloudserver.client
+namespace cloudserver.backbeatRoutes
 
 /// Retrieves bucket sequence information
 @readonly

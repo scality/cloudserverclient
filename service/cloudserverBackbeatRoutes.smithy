@@ -1,6 +1,6 @@
 $version: "2.0"
 
-namespace cloudserver.client
+namespace cloudserver.backbeatRoutes
 
 use aws.protocols#restJson1
 use aws.auth#sigv4
@@ -8,8 +8,8 @@ use aws.api#service
 
 @restJson1
 @sigv4(name: "s3")
-@service(sdkId: "cloudserver")
-service cloudserver {
+@service(sdkId: "CloudserverBackbeatRoutes")
+service CloudserverBackbeatRoutes {
     version: "2017-07-01",
     operations: [
         BatchDelete,

@@ -8,7 +8,7 @@ use aws.api#service
 
 @restXml(noErrorWrapping: true)
 @sigv4(name: "s3")
-@service(sdkId: "cloudserverBucketQuota")
+@service(sdkId: "CloudserverBucketQuota")
 service CloudserverBucketQuota {
     version: "2018-07-11",
     operations: [

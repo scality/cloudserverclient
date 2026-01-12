@@ -1,5 +1,5 @@
 import { 
-    CloudserverClient,
+    BackbeatRoutesClient,
     ListLifecycleCurrentsInput,
     ListLifecycleCurrentsCommand,
     ListLifecycleNonCurrentsInput,
@@ -13,10 +13,10 @@ import assert from 'assert';
 import { createTestClient, testConfig } from './testSetup';
 
 describe('CloudServer Lifecycle API Tests', () => {
-    let client: CloudserverClient;
+    let backbeatRoutesClient: BackbeatRoutesClient;
 
     beforeAll(() => {
-        ({client} = createTestClient());
+        ({backbeatRoutesClient} = createTestClient());
     });
 
     it('should test ListLifecycleCurrents', async () => {
@@ -25,7 +25,7 @@ describe('CloudServer Lifecycle API Tests', () => {
             MaxKeys: 1,
         };
         const command = new ListLifecycleCurrentsCommand(listInput);
-        const result = await client.send(command);
+        const result = await backbeatRoutesClient.send(command);
         assert.strictEqual(result.Contents?.[0].Key, testConfig.objectKey);
     });
 
@@ -35,7 +35,7 @@ describe('CloudServer Lifecycle API Tests', () => {
             MaxKeys: 5,
         };
         const command = new ListLifecycleNonCurrentsCommand(listInput);
-        const result = await client.send(command);
+        const result = await backbeatRoutesClient.send(command);
         assert.strictEqual(result.$metadata.httpStatusCode, 200);
     });
 
@@ -45,7 +45,7 @@ describe('CloudServer Lifecycle API Tests', () => {
             MaxKeys: 5,
         };
         const command = new ListLifecycleOrphansCommand(listInput);
-        const result = await client.send(command);
+        const result = await backbeatRoutesClient.send(command);
         assert.strictEqual(result.$metadata.httpStatusCode, 200);
     });
 
@@ -55,7 +55,7 @@ describe('CloudServer Lifecycle API Tests', () => {
             Key: testConfig.objectKey,
         };
         const command = new DeleteObjectFromExpirationCommand(deleteInput);
-        const result = await client.send(command);
+        const result = await backbeatRoutesClient.send(command);
         assert.strictEqual(result.$metadata.httpStatusCode, 200);
     });
 });

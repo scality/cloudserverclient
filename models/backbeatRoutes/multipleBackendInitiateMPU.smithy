@@ -1,15 +1,15 @@
 $version: "2.0"
-namespace cloudserver.client
+namespace cloudserver.backbeatRoutes
 
-/// Completes a multipart upload for multiple backend storage
-@http(method: "POST", uri: "/_/backbeat/multiplebackenddata/{Bucket}/{Key+}?operation=completempu")
-operation MultipleBackendCompleteMPU {
-    input: MultipleBackendCompleteMPUInput,
-    output: MultipleBackendCompleteMPUOutput,
+/// Initiates a multipart upload for multiple backend storage
+@http(method: "POST", uri: "/_/backbeat/multiplebackenddata/{Bucket}/{Key+}?operation=initiatempu")
+operation MultipleBackendInitiateMPU {
+    input: MultipleBackendInitiateMPUInput,
+    output: MultipleBackendInitiateMPUOutput,
 }
 
 @input
-structure MultipleBackendCompleteMPUInput {
+structure MultipleBackendInitiateMPUInput {
     @httpLabel
     @required
     Bucket: String,
@@ -18,15 +18,15 @@ structure MultipleBackendCompleteMPUInput {
     @required
     Key: String,
     
-    @httpHeader("X-Scal-Storage-Type")
-    StorageType: String,
-    
     @httpHeader("X-Scal-Storage-Class")
     @required
     StorageClass: String,
     
     @httpHeader("X-Scal-Version-Id")
     VersionId: String,
+    
+    @httpHeader("X-Scal-Storage-Type")
+    StorageType: String,
     
     @httpHeader("X-Scal-Content-Type")
     ContentType: String,
@@ -43,12 +43,9 @@ structure MultipleBackendCompleteMPUInput {
     @httpHeader("X-Scal-Content-Encoding")
     ContentEncoding: String,
     
-    @httpHeader("X-Scal-Upload-Id")
-    UploadId: String,
-    
     @httpHeader("X-Scal-Tags")
     Tags: String,
-
+    
     @httpHeader("X-Scal-Request-Uids")
     RequestUids: String,
     
@@ -57,10 +54,7 @@ structure MultipleBackendCompleteMPUInput {
 }
 
 @output
-structure MultipleBackendCompleteMPUOutput {
-    /// Version ID of the completed object
-    versionId: String,
-    
-    /// Location information
-    location: LocationMDList,
+structure MultipleBackendInitiateMPUOutput {
+    /// Upload ID for the multipart upload
+    uploadId: String,
 }

@@ -1,5 +1,5 @@
 $version: "2.0"
-namespace cloudserver.client
+namespace cloudserver.backbeatRoutes
 
 /// Retrieves Raft log entries for a specific log ID
 @readonly

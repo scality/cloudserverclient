@@ -1,5 +1,5 @@
 import { 
-    CloudserverClient,
+    BackbeatRoutesClient,
     GetMetadataInput,
     GetMetadataCommand,
     PutMetadataInput,
@@ -11,10 +11,10 @@ import assert from 'assert';
 import { createTestClient, testConfig } from './testSetup';
 
 describe('CloudServer Metadata API Tests', () => {
-    let client: CloudserverClient;
+    let backbeatRoutesClient: BackbeatRoutesClient;
 
     beforeAll(() => {
-        ({client} = createTestClient());
+        ({backbeatRoutesClient} = createTestClient());
     });
 
     it('should test GetMetadata API', async () => {
@@ -23,7 +23,7 @@ describe('CloudServer Metadata API Tests', () => {
             Key: testConfig.objectKey,
         };
         const getMetadataCommand = new GetMetadataCommand(getMetadataInput);
-        const metadataData = await client.send(getMetadataCommand);
+        const metadataData = await backbeatRoutesClient.send(getMetadataCommand);
         assert.ok(metadataData.Body?.includes(testConfig.objectKey));
     });
 
@@ -48,7 +48,7 @@ describe('CloudServer Metadata API Tests', () => {
         };
         
         const command = new PutMetadataCommand(putInput);
-        const result = await client.send(command);
+        const result = await backbeatRoutesClient.send(command);
         assert.strictEqual(result.$metadata.httpStatusCode, 200);
     });
 
@@ -58,7 +58,7 @@ describe('CloudServer Metadata API Tests', () => {
             Bucket: testConfig.bucketName,
         };
         const getBucketMetadataCommand = new GetBucketMetadataCommand(getBucketMetadataInput);
-        const bucketMetadata = await client.send(getBucketMetadataCommand);
+        const bucketMetadata = await backbeatRoutesClient.send(getBucketMetadataCommand);
         assert.strictEqual(bucketMetadata.name, testConfig.bucketName);
     });
 });

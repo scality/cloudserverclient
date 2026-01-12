@@ -1,5 +1,5 @@
 import { 
-    CloudserverClient,
+    BackbeatRoutesClient,
     GetBucketIndexesInput,
     GetBucketIndexesCommand,
     PutBucketIndexesInput,
@@ -11,10 +11,10 @@ import assert from 'assert';
 import { createTestClient, testConfig } from './testSetup';
 
 describe('CloudServer Indexes API Tests', () => {
-    let client: CloudserverClient;
+    let backbeatRoutesClient: BackbeatRoutesClient;
 
     beforeAll(() => {
-        ({client} = createTestClient());
+        ({backbeatRoutesClient} = createTestClient());
     });
 
     it('should test PutBucketIndexes', async () => {
@@ -32,7 +32,7 @@ describe('CloudServer Indexes API Tests', () => {
             Body: new TextEncoder().encode(indexData),
         };
         const putBucketIndexesCommand = new PutBucketIndexesCommand(putBucketIndexesInput);
-        const result = await client.send(putBucketIndexesCommand);
+        const result = await backbeatRoutesClient.send(putBucketIndexesCommand);
         assert.strictEqual(result.$metadata.httpStatusCode, 200);
     });
 
@@ -41,7 +41,7 @@ describe('CloudServer Indexes API Tests', () => {
             Bucket: testConfig.bucketName,
         };
         const getBucketIndexesCommand = new GetBucketIndexesCommand(getBucketIndexesInput);
-        const indexesData = await client.send(getBucketIndexesCommand);
+        const indexesData = await backbeatRoutesClient.send(getBucketIndexesCommand);
         assert.ok(indexesData.Indexes && indexesData.Indexes.length >= 1);
     });
 
@@ -60,7 +60,7 @@ describe('CloudServer Indexes API Tests', () => {
             Body: new TextEncoder().encode(indexesToDelete),
         };
         const deleteBucketIndexesCommand = new DeleteBucketIndexesCommand(deleteBucketIndexesInput);
-        const result = await client.send(deleteBucketIndexesCommand);
+        const result = await backbeatRoutesClient.send(deleteBucketIndexesCommand);
         assert.strictEqual(result.$metadata.httpStatusCode, 200);
     });
 });
