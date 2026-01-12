@@ -1,3 +1,4 @@
 export * from './clients/backbeatRoutes';
-export { BucketQuotaClient } from './clients/bucketQuota';
+export * from './clients/bucketQuota';
+export { CloudserverClient, CloudserverClientConfig } from './clients/cloudserver';
 export * from './utils';
