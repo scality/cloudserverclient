@@ -21,10 +21,11 @@ import {
     addContentLengthMiddleware,
 } from '../src/index';
 import { createTestClient, testConfig } from './testSetup';
+import { describeForMongoBackend } from './testHelpers';
 import assert from 'assert';
 import crypto from 'crypto';
 
-describe('CloudServer Multiple Backend API Tests', () => {
+describeForMongoBackend('CloudServer Multiple Backend API Tests', () => {
     let backbeatRoutesClient: BackbeatRoutesClient;
 
     beforeAll(() => {

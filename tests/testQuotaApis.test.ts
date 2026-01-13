@@ -5,9 +5,10 @@ import {
     DeleteBucketQuotaCommand,
 } from '../src/clients/bucketQuota';
 import { createTestClient, testConfig } from './testSetup';
+import { describeForMongoBackend } from './testHelpers';
 import assert from 'assert';
 
-describe('Quota API Tests', () => {
+describeForMongoBackend('Quota API Tests', () => {
     let bucketQuotaClient: BucketQuotaClient;
     const quotaValue = 12321;
 

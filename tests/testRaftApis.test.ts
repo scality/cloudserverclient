@@ -11,10 +11,11 @@ import {
 } from '../src/index';
 import assert from 'assert';
 import { createTestClient, testConfig } from './testSetup';
+import { describeForMetadataBackend } from './testHelpers';
 import stream from 'stream';
 import JSONStream from 'JSONStream';
 
-describe('CloudServer Raft API Tests', () => {
+describeForMetadataBackend('CloudServer Raft API Tests', () => {
     let backbeatRoutesClient: BackbeatRoutesClient;
 
     beforeAll(() => {

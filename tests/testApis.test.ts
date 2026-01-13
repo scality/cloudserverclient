@@ -13,9 +13,10 @@ import {
 } from '../src/index';
 import { S3Client, GetObjectCommand as S3getCommand } from '@aws-sdk/client-s3';
 import { createTestClient, testConfig } from './testSetup';
+import { describeForMetadataBackend } from './testHelpers';
 import assert from 'assert';
 
-describe('CloudServer API Tests', () => {
+describeForMetadataBackend('CloudServer Backbeat Routes API Tests', () => {
     let backbeatRoutesClient: BackbeatRoutesClient;
     let s3client: S3Client;
 

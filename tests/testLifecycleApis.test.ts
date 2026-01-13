@@ -11,8 +11,9 @@ import {
 } from '../src/index';
 import assert from 'assert';
 import { createTestClient, testConfig } from './testSetup';
+import { describeForMetadataBackend } from './testHelpers';
 
-describe('CloudServer Lifecycle API Tests', () => {
+describeForMetadataBackend('CloudServer Lifecycle API Tests', () => {
     let backbeatRoutesClient: BackbeatRoutesClient;
 
     beforeAll(() => {

@@ -8,7 +8,7 @@ import {
     ListObjectVersionsExtendedCommand,
 } from '../src/clients/s3Extended';
 
-describe('S3 Extended API Tests', () => {
+describeForMongoBackend('S3 Extended API Tests', () => {
     let s3client: S3Client;
     const key2ndObject = `${testConfig.objectKey}2nd`;
     const body2ndObject = `${testConfig.objectData}2nd`;

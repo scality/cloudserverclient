@@ -9,8 +9,9 @@ import {
 } from '../src/index';
 import assert from 'assert';
 import { createTestClient, testConfig } from './testSetup';
+import { describeForMongoBackend } from './testHelpers';
 
-describe('CloudServer Indexes API Tests', () => {
+describeForMongoBackend('CloudServer Indexes API Tests', () => {
     let backbeatRoutesClient: BackbeatRoutesClient;
 
     beforeAll(() => {

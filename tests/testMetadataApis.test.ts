@@ -9,8 +9,9 @@ import {
 } from '../src/index';
 import assert from 'assert';
 import { createTestClient, testConfig } from './testSetup';
+import { describeForMetadataBackend } from './testHelpers';
 
-describe('CloudServer Metadata API Tests', () => {
+describeForMetadataBackend('CloudServer Metadata API Tests', () => {
     let backbeatRoutesClient: BackbeatRoutesClient;
 
     beforeAll(() => {

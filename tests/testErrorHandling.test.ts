@@ -7,8 +7,9 @@ import {
 } from '../src/index';
 import assert from 'assert';
 import { createTestClient, testConfig } from './testSetup';
+import { describeForMongoBackend } from './testHelpers';
 
-describe('CloudServer test error handling', () => {
+describeForMongoBackend('CloudServer test error handling', () => {
     let backbeatRoutesClient: BackbeatRoutesClient;
 
     beforeAll(() => {
