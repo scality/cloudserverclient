@@ -7,7 +7,7 @@ services:
       - ./md-config.json:/mnt/standalone_workdir/config.json:ro
 
   cloudserver-metadata:
-    image: ghcr.io/scality/cloudserver:9.1.4
+    image: ghcr.io/scality/cloudserver:9.3.0-preview.1
     platform: linux/amd64
     network_mode: 'host'
     environment:

@@ -24,7 +24,7 @@ services:
     restart: "no"
 
   cloudserver:
-    image: ghcr.io/scality/cloudserver:9.1.4
+    image: ghcr.io/scality/cloudserver:9.3.0-preview.1
     platform: linux/amd64
     ports:
       - "8000:8000"
