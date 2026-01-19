@@ -3,12 +3,12 @@ services:
   # MongoDB
   # ===================
   mongodb:
-    image: mongo:4.4
-    command: mongod --replSet rs0 --port 27018 --bind_ip_all
+    image: ${MONGODB_IMAGE}
+    command: mongod --replSet rs0 --port ${MONGODB_PORT} --bind_ip_all
     ports:
-      - "127.0.0.1:27018:27018"
+      - "127.0.0.1:${MONGODB_PORT}:${MONGODB_PORT}"
     healthcheck:
-      test: echo 'db.runCommand("ping").ok' | mongo --port 27018 --quiet
+      test: echo 'db.runCommand("ping").ok' | mongo --port ${MONGODB_PORT} --quiet
       interval: 5s
       timeout: 10s
       retries: 5
@@ -18,13 +18,13 @@ services:
       - backbeat
 
   mongodb-init:
-    image: mongo:4.4
+    image: ${MONGODB_IMAGE}
     depends_on:
       mongodb:
         condition: service_healthy
     command: >
-      mongo --host mongodb:27018 --eval
-      'rs.initiate({_id: "rs0", members: [{_id: 0, host: "mongodb:27018"}]})'
+      mongo --host mongodb:${MONGODB_PORT} --eval
+      'rs.initiate({_id: "rs0", members: [{_id: 0, host: "mongodb:${MONGODB_PORT}"}]})'
     restart: "no"
     profiles:
       - mongo
@@ -34,24 +34,24 @@ services:
   # Cloudserver with MongoDB backend
   # ===================
   cloudserver:
-    image: ghcr.io/scality/cloudserver:9.3.0-preview.1
+    image: ${CLOUDSERVER_IMAGE}
     ports:
-      - "127.0.0.1:8000:8000"
+      - "127.0.0.1:${CLOUDSERVER_PORT}:${CLOUDSERVER_PORT}"
     environment:
       - S3VAULT=mem
       - S3METADATA=mongodb
       - S3DATA=mem
-      - MONGODB_HOSTS=mongodb:27018
+      - MONGODB_HOSTS=mongodb:${MONGODB_PORT}
       - MONGODB_RS=rs0
       - REMOTE_MANAGEMENT_DISABLE=true
       - LOG_LEVEL=info
       - CRR_METRICS_HOST=backbeat-api
-      - CRR_METRICS_PORT=8900
+      - CRR_METRICS_PORT=${BACKBEAT_PORT}
     depends_on:
       mongodb-init:
         condition: service_completed_successfully
     healthcheck:
-      test: ["CMD-SHELL", "node -e \"require('http').get('http://localhost:8000/', r => process.exit(r.statusCode < 500 ? 0 : 1)).on('error', () => process.exit(1))\""]
+      test: ["CMD-SHELL", "node -e \"require('http').get('http://localhost:${CLOUDSERVER_PORT}/', r => process.exit(r.statusCode < 500 ? 0 : 1)).on('error', () => process.exit(1))\""]
       interval: 5s
       timeout: 5s
       retries: 12
@@ -63,7 +63,7 @@ services:
   # Metadata backend services
   # ===================
   metadata-standalone:
-    image: ghcr.io/scality/metadata:8.11.0-standalone
+    image: ${METADATA_IMAGE}
     network_mode: 'host'
     volumes:
       - ./md-config.json:/mnt/standalone_workdir/config.json:ro
@@ -71,7 +71,7 @@ services:
       - metadata
 
   cloudserver-metadata:
-    image: ghcr.io/scality/cloudserver:9.3.0-preview.1
+    image: ${CLOUDSERVER_IMAGE}
     network_mode: 'host'
     environment:
       - S3VAULT=mem
@@ -82,7 +82,7 @@ services:
     depends_on:
       - metadata-standalone
     healthcheck:
-      test: ["CMD-SHELL", "node -e \"require('http').get('http://localhost:8000/', r => process.exit(r.statusCode < 500 ? 0 : 1)).on('error', () => process.exit(1))\""]
+      test: ["CMD-SHELL", "node -e \"require('http').get('http://localhost:${CLOUDSERVER_PORT}/', r => process.exit(r.statusCode < 500 ? 0 : 1)).on('error', () => process.exit(1))\""]
       interval: 5s
       timeout: 5s
       retries: 12
@@ -93,9 +93,9 @@ services:
   # Backbeat services
   # ===================
   zookeeper:
-    image: zookeeper:3.8
+    image: ${ZOOKEEPER_IMAGE}
     ports:
-      - "127.0.0.1:2181:2181"
+      - "127.0.0.1:${ZOOKEEPER_PORT}:${ZOOKEEPER_PORT}"
     healthcheck:
       test: ["CMD", "zkServer.sh", "status"]
       interval: 10s
@@ -105,25 +105,25 @@ services:
       - backbeat
 
   zk-init:
-    image: zookeeper:3.8
+    image: ${ZOOKEEPER_IMAGE}
     depends_on:
       zookeeper:
         condition: service_healthy
     command: >
       bash -c "
         sleep 2 &&
-        zkCli.sh -server zookeeper:2181 create /backbeat '' &&
-        zkCli.sh -server zookeeper:2181 create /backbeat/replication '' &&
-        zkCli.sh -server zookeeper:2181 create /backbeat/replication/state '' &&
-        zkCli.sh -server zookeeper:2181 create /backbeat/ingestion '' &&
-        zkCli.sh -server zookeeper:2181 create /backbeat/ingestion/state '' &&
-        zkCli.sh -server zookeeper:2181 create /backbeat/replication/state/us-east-1 '{\"paused\":false}' &&
-        zkCli.sh -server zookeeper:2181 create /backbeat/replication/state/us-east-2 '{\"paused\":false}' &&
-        zkCli.sh -server zookeeper:2181 create /backbeat/replication/state/wontwork-location '{\"paused\":false}' &&
-        zkCli.sh -server zookeeper:2181 create /backbeat/replication/state/location-dmf-v1 '{\"paused\":false}' &&
-        zkCli.sh -server zookeeper:2181 create /backbeat/replication/state/zenko '{\"paused\":false}' &&
-        zkCli.sh -server zookeeper:2181 create /backbeat/replication/state/aws-location '{\"paused\":false}' &&
-        zkCli.sh -server zookeeper:2181 create /backbeat/replication/replayState '' &&
+        zkCli.sh -server zookeeper:${ZOOKEEPER_PORT} create /backbeat '' &&
+        zkCli.sh -server zookeeper:${ZOOKEEPER_PORT} create /backbeat/replication '' &&
+        zkCli.sh -server zookeeper:${ZOOKEEPER_PORT} create /backbeat/replication/state '' &&
+        zkCli.sh -server zookeeper:${ZOOKEEPER_PORT} create /backbeat/ingestion '' &&
+        zkCli.sh -server zookeeper:${ZOOKEEPER_PORT} create /backbeat/ingestion/state '' &&
+        zkCli.sh -server zookeeper:${ZOOKEEPER_PORT} create /backbeat/replication/state/us-east-1 '{\"paused\":false}' &&
+        zkCli.sh -server zookeeper:${ZOOKEEPER_PORT} create /backbeat/replication/state/us-east-2 '{\"paused\":false}' &&
+        zkCli.sh -server zookeeper:${ZOOKEEPER_PORT} create /backbeat/replication/state/wontwork-location '{\"paused\":false}' &&
+        zkCli.sh -server zookeeper:${ZOOKEEPER_PORT} create /backbeat/replication/state/location-dmf-v1 '{\"paused\":false}' &&
+        zkCli.sh -server zookeeper:${ZOOKEEPER_PORT} create /backbeat/replication/state/zenko '{\"paused\":false}' &&
+        zkCli.sh -server zookeeper:${ZOOKEEPER_PORT} create /backbeat/replication/state/aws-location '{\"paused\":false}' &&
+        zkCli.sh -server zookeeper:${ZOOKEEPER_PORT} create /backbeat/replication/replayState '' &&
         echo 'Zookeeper paths initialized successfully'
       "
     restart: "no"
@@ -131,20 +131,20 @@ services:
       - backbeat
 
   redis:
-    image: redis:7-alpine
+    image: ${REDIS_IMAGE}
     ports:
-      - "127.0.0.1:6379:6379"
+      - "127.0.0.1:${REDIS_PORT}:${REDIS_PORT}"
     profiles:
       - backbeat
 
   kafka:
-    image: wurstmeister/kafka:latest
+    image: ${KAFKA_IMAGE}
     ports:
-      - "127.0.0.1:9092:9092"
+      - "127.0.0.1:${KAFKA_PORT}:${KAFKA_PORT}"
     environment:
-      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092
-      KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9092
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:${ZOOKEEPER_PORT}
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:${KAFKA_PORT}
+      KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:${KAFKA_PORT}
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
     depends_on:
       zookeeper:
@@ -153,14 +153,14 @@ services:
       - backbeat
 
   backbeat-api:
-    image: ghcr.io/scality/backbeat:9.1.3
+    image: ${BACKBEAT_IMAGE}
     ports:
-      - "127.0.0.1:8900:8900"
+      - "127.0.0.1:${BACKBEAT_PORT}:${BACKBEAT_PORT}"
     environment:
-      ZOOKEEPER_CONNECTION_STRING: zookeeper:2181
+      ZOOKEEPER_CONNECTION_STRING: zookeeper:${ZOOKEEPER_PORT}
       REDIS_HOST: redis
-      KAFKA_HOSTS: kafka:9092
-      MONGODB_HOSTS: mongodb:27018
+      KAFKA_HOSTS: kafka:${KAFKA_PORT}
+      MONGODB_HOSTS: mongodb:${MONGODB_PORT}
       REMOTE_MANAGEMENT_DISABLE: "1"
       HEALTHCHECKS_ALLOWFROM: "0.0.0.0/0"
     depends_on:
@@ -173,7 +173,7 @@ services:
       redis:
         condition: service_started
     healthcheck:
-      test: ["CMD-SHELL", "node -e \"require('http').get('http://localhost:8900/_/healthcheck', r => process.exit(r.statusCode === 200 ? 0 : 1)).on('error', () => process.exit(1))\""]
+      test: ["CMD-SHELL", "node -e \"require('http').get('http://localhost:${BACKBEAT_PORT}/_/healthcheck', r => process.exit(r.statusCode === 200 ? 0 : 1)).on('error', () => process.exit(1))\""]
       interval: 5s
       timeout: 5s
       retries: 12

@@ -40,7 +40,7 @@ jobs:
         uses: ./.github/actions/setup-and-build
 
       - name: Start Cloudserver with MongoDB backend
-        run: docker compose -f .github/docker-compose.yml --profile mongo up -d --wait
+        run: docker compose -f .github/docker-compose.yml --env-file .github/docker.env --profile mongo up -d --wait
 
       - name: Run MongoDB backend tests
         run: yarn test:mongo-backend
@@ -65,7 +65,7 @@ jobs:
           password: ${{ github.token }}
 
       - name: Start Cloudserver with Scality metadata backend
-        run: docker compose -f .github/docker-compose.yml --profile metadata up -d --wait
+        run: docker compose -f .github/docker-compose.yml --env-file .github/docker.env --profile metadata up -d --wait
 
       - name: Wait for metadata to be ready
         run: |
@@ -95,7 +95,7 @@ jobs:
           password: ${{ github.token }}
 
       - name: Start Backbeat with CloudServer
-        run: docker compose -f .github/docker-compose.yml --profile backbeat up -d --wait
+        run: docker compose -f .github/docker-compose.yml --env-file .github/docker.env --profile backbeat up -d --wait
 
       - name: Run backbeat apis tests
         run: yarn test:backbeat-apis
