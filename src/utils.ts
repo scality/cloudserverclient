@@ -106,3 +106,19 @@ export function createCustomErrorMiddleware() {
         }
     };
 }
+
+export function attachReqUids(s3req, uuid: string) {
+    s3req.middlewareStack.add(
+        next => async args => {
+            if (args.request && args.request.headers) {
+                // eslint-disable-next-line no-param-reassign
+                args.request.headers['X-Scal-Request-Uids'] = uuid;
+            }
+            return next(args);
+        },
+        {
+            step: 'build',
+            name: 'attachReqUids',
+        }
+    );
+}
