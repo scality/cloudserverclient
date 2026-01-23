@@ -19,7 +19,9 @@
   },
   "files": [
     "dist",
-    "build/smithy/*/typescript-codegen"
+    "build/smithy/cloudserverBackbeatRoutes/typescript-codegen",
+    "build/smithy/cloudserverBucketQuota/typescript-codegen",
+    "build/smithy/cloudserverProxyBackbeatApis/typescript-codegen"
   ],
   "publishConfig": {
     "access": "public",
