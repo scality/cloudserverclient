@@ -75,7 +75,7 @@ export function parseListObjectsUserMetadataMiddleware(captured: { xml: string }
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     return (next: any) => async (args: any) => {
         const result = await next(args);
-        const parsed = new XMLParser().parse(captured.xml);
+        const parsed = new XMLParser({ isArray: name => name === 'Contents' }).parse(captured.xml);
         const xmlContents = parsed?.ListBucketResult?.Contents;
         if (result.output.Contents && xmlContents) {
             for (let i = 0; i < result.output.Contents.length; i++) {
