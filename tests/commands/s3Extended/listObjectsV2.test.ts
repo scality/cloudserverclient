@@ -49,7 +49,7 @@ describeForMongoBackend('ListObjectsV2Extended', () => {
         assert.strictEqual(getData2.Contents[0].Key, key2ndObject);
     });
 
-    describe.skip('ListObjectsV2 with ObjectAttributes', () => {
+    describe('ListObjectsV2 with ObjectAttributes', () => {
         const metaKey1 = `${testConfig.objectKey}-listv2-meta1`;
         const metaKey2 = `${testConfig.objectKey}-listv2-meta2`;
 
@@ -71,6 +71,7 @@ describeForMongoBackend('ListObjectsV2Extended', () => {
         it('should list objects with a single user metadata key', async () => {
             const result = await s3client.send(new ListObjectsV2ExtendedCommand({
                 Bucket: testConfig.bucketName,
+                Prefix: `${testConfig.objectKey}-listv2-meta`,
                 ObjectAttributes: ['x-amz-meta-foo'],
             })) as ListObjectsV2ExtendedOutput;
 
@@ -117,6 +118,7 @@ describeForMongoBackend('ListObjectsV2Extended', () => {
         it('should list objects with non-existing user metadata key', async () => {
             const result = await s3client.send(new ListObjectsV2ExtendedCommand({
                 Bucket: testConfig.bucketName,
+                Prefix: `${testConfig.objectKey}-listv2-meta`,
                 ObjectAttributes: ['x-amz-meta-nonexistent'],
             })) as ListObjectsV2ExtendedOutput;
 
@@ -130,6 +132,7 @@ describeForMongoBackend('ListObjectsV2Extended', () => {
         it('should list objects with RestoreStatus combined with user metadata', async () => {
             const result = await s3client.send(new ListObjectsV2ExtendedCommand({
                 Bucket: testConfig.bucketName,
+                Prefix: `${testConfig.objectKey}-listv2-meta`,
                 ObjectAttributes: ['RestoreStatus', 'x-amz-meta-foo'],
             })) as ListObjectsV2ExtendedOutput;
 
@@ -143,6 +146,7 @@ describeForMongoBackend('ListObjectsV2Extended', () => {
         it('should list objects with RestoreStatus combined with non-existing user metadata', async () => {
             const result = await s3client.send(new ListObjectsV2ExtendedCommand({
                 Bucket: testConfig.bucketName,
+                Prefix: `${testConfig.objectKey}-listv2-meta`,
                 ObjectAttributes: ['RestoreStatus', 'x-amz-meta-nonexistent'],
             })) as ListObjectsV2ExtendedOutput;
 

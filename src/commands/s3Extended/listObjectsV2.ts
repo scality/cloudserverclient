@@ -29,10 +29,12 @@ export class ListObjectsV2ExtendedCommand extends ListObjectsV2Command {
     constructor(input: ListObjectsV2ExtendedInput) {
         super(input);
 
-        this.middlewareStack.add(
-            extendCommandWithExtraParametersMiddleware(input.Query),
-            { step: 'build', name: 'extendCommandWithExtraParameters' }
-        );
+        if (input.Query) {
+            this.middlewareStack.add(
+                extendCommandWithExtraParametersMiddleware(input.Query),
+                { step: 'build', name: 'extendCommandWithExtraParameters' }
+            );
+        }
 
         if (input.ObjectAttributes?.length) {
             const captured = { xml: '' };
