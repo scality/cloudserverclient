@@ -59,6 +59,9 @@ export type {
 
 export class ProxyBackbeatApisClient extends CloudserverProxyBackbeatApisClient {
     constructor(config: CloudserverProxyBackbeatApisClientConfig) {
-        super(config);
+        super({
+            ...config,
+            signingEscapePath: false,
+        });
     }
 }

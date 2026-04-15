@@ -15,6 +15,9 @@ export {
 
 export class BucketQuotaClient extends CloudserverBucketQuotaClient {
     constructor(config: CloudserverBucketQuotaClientConfig) {
-        super(config);
+        super({
+            ...config,
+            signingEscapePath: false,
+        });
     }
 }

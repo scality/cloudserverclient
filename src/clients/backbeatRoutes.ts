@@ -7,7 +7,10 @@ import { createCustomErrorMiddleware } from '../utils';
 export * from '../../build/smithy/cloudserverBackbeatRoutes/typescript-codegen';
 export class BackbeatRoutesClient extends CloudserverBackbeatRoutesClient {
     constructor(config: CloudserverBackbeatRoutesClientConfig) {
-        super(config);
+        super({
+            ...config,
+            signingEscapePath: false,
+        });
         
         this.middlewareStack.add(createCustomErrorMiddleware(), {
             step: 'deserialize',
