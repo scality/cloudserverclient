@@ -7,7 +7,8 @@ use aws.auth#unsignedPayload
 @unsignedPayload
 operation PutData {
     input: PutDataInput,
-    output: PutDataOutput
+    output: PutDataOutput,
+    errors: [VersionIdCollisionException]
 }
 
 structure PutDataInput {
@@ -31,6 +32,9 @@ structure PutDataInput {
     @httpHeader("X-Scal-Request-Uids")
     RequestUids: String,
 
+    @httpHeader("x-scal-version-id")
+    VersionId: String,
+
     @httpPayload
     @default("")
     Body: StreamingBlob
@@ -45,7 +49,20 @@ structure PutDataOutput {
 
     @httpHeader("x-amz-server-side-encryption-customer-algorithm")
     SSECustomerAlgorithm: String,
-    
+
     @httpHeader("x-amz-server-side-encryption-aws-kms-key-id")
     SSEKMSKeyId: String
+}
+
+/// Returned by PutData when the destination already has an object at this
+/// versionId. The existing microVersionId is included in the response header
+/// so the caller can run the cascade loop/stale/proceed classification.
+@error("client")
+@httpError(409)
+structure VersionIdCollisionException {
+    @required
+    message: String,
+
+    @httpHeader("x-scal-micro-version-id")
+    microVersionId: String
 }
