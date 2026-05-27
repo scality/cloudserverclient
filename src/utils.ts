@@ -1,7 +1,50 @@
+import { addExpectContinueMiddleware } from '@aws-sdk/middleware-expect-continue';
+import { MiddlewareStack, RequestHandler } from '@smithy/types';
 import { XMLParser } from 'fast-xml-parser';
 import {
     CloudserverBackbeatRoutesServiceException
 } from '../build/smithy/cloudserverBackbeatRoutes/typescript-codegen';
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export type WithMiddlewareStack = { middlewareStack?: MiddlewareStack<any, any> };
+
+/**
+ * Attach the AWS SDK Expect: 100-continue middleware to a single command.
+ *
+ * Use this on commands whose target route honors 100-continue server-side.
+ * Pass the client's requestHandler so the underlying middleware can skip
+ * the header when running on FetchHttpHandler.
+ *
+ * @param command - The command to attach the middleware to.
+ * @param requestHandler - The client's requestHandler, used by the AWS SDK
+ *   middleware to detect FetchHttpHandler and skip the header in that case.
+ * @param expectContinueHeader - Controls when the header is set:
+ *   - `true` (default): always set the header on body-carrying requests.
+ *   - `false`: never set the header (middleware no-op).
+ *   - `number`: only set the header when the body's Content-Length is
+ *     greater than or equal to this threshold (in bytes). Useful to skip
+ *     the handshake cost on small payloads.
+ */
+export function attachExpectContinueMiddleware<TCommand>(
+    command: TCommand & WithMiddlewareStack,
+    requestHandler?: RequestHandler<unknown, unknown>,
+    expectContinueHeader: boolean | number = true,
+): TCommand {
+    if (!command.middlewareStack) {
+        throw new Error('Command does not have a middleware stack');
+    }
+
+    command.middlewareStack.add(
+        addExpectContinueMiddleware({
+            runtime: 'node',
+            requestHandler,
+            expectContinueHeader,
+        }),
+        { step: 'build', name: 'expectContinue' },
+    );
+
+    return command;
+}
 
 /**
  * Adds middleware to manually set the Content-Length header on a command.
