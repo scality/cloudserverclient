@@ -55,10 +55,37 @@ jobs:
       - name: Publish to npm with provenance
         run: npm publish --provenance --tag latest
 
+  publish-github:
+    name: Publish to GitHub Packages
+    runs-on: ubuntu-24.04
+    needs: build
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+
+      - name: Download build artifacts
+        uses: actions/download-artifact@v7
+        with:
+          name: build-artifacts
+
+      - name: Setup Node.js for GitHub Packages
+        uses: actions/setup-node@v6
+        with:
+          node-version: '24'
+          registry-url: 'https://npm.pkg.github.com'
+
+      - name: Publish to GitHub Packages
+        run: npm publish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
   create-release:
     name: Create GitHub Release
     runs-on: ubuntu-24.04
-    needs: [build, publish-npm]
+    needs: [build, publish-npm, publish-github]
     permissions:
       contents: write
     steps:

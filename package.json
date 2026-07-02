@@ -24,8 +24,7 @@
     "build/smithy/cloudserverProxyBackbeatApis/typescript-codegen"
   ],
   "publishConfig": {
-    "access": "public",
-    "registry": "https://registry.npmjs.org"
+    "access": "public"
   },
   "scripts": {
     "clean:build": "rm -rf build dist",
