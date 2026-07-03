@@ -5,30 +5,79 @@ run-name: Release
 on:
   workflow_dispatch:
 
+permissions: {}
+
 jobs:
   build:
     name: Build
     runs-on: ubuntu-24.04
+    permissions:
+      contents: read
+      id-token: write
+      attestations: write
     outputs:
       version: ${{ steps.package-version.outputs.version }}
     steps:
+      - name: Reject disallowed branch
+        if: >-
+          ${{ !startsWith(github.ref, 'refs/heads/development/')
+          && !startsWith(github.ref, 'refs/heads/hotfix/') }}
+        env:
+          REF_NAME: ${{ github.ref_name }}
+        run: |
+          echo "::error::Releases must run from a development/* or" \
+            "hotfix/* branch (got $REF_NAME)"
+          exit 1
+
       - name: Checkout code
         uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+          fetch-tags: true
 
       - name: Get version from package.json
         id: package-version
         run: echo "version=$(node -p "require('./package.json').version")" >> $GITHUB_OUTPUT
 
+      - name: Fail if release already exists
+        env:
+          GH_TOKEN: ${{ github.token }}
+          VERSION: ${{ steps.package-version.outputs.version }}
+        run: |
+          if gh release view "$VERSION" --repo "$GITHUB_REPOSITORY" \
+              >/dev/null 2>&1; then
+            echo "::error::Release $VERSION already exists"
+            exit 1
+          fi
+
+      - name: Fail if tag already exists
+        env:
+          VERSION: ${{ steps.package-version.outputs.version }}
+        run: |
+          if git rev-parse -q --verify "refs/tags/$VERSION" >/dev/null; then
+            echo "::error::Tag $VERSION already exists (possibly on a" \
+              "different commit); refusing to move it"
+            exit 1
+          fi
+
       - name: Setup and Build
         uses: ./.github/actions/setup-and-build
 
-      - name: Upload build artifacts
+      - name: Pack tarball
+        run: npm pack --ignore-scripts
+
+      - name: Attest build provenance
+        uses: actions/attest-build-provenance@v4
+        with:
+          subject-path: '*.tgz'
+
+      - name: Upload package artifact
         uses: actions/upload-artifact@v6
         with:
-          name: build-artifacts
-          path: |
-            dist/
-            build/
+          name: package
+          path: '*.tgz'
+          if-no-files-found: error
+          retention-days: 1
 
   publish-npm:
     name: Publish to npm registry
@@ -38,49 +87,57 @@ jobs:
       contents: read
       id-token: write
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v6
-
-      - name: Download build artifacts
+      - name: Download package artifact
         uses: actions/download-artifact@v7
         with:
-          name: build-artifacts
+          name: package
 
       - name: Setup Node.js for npm registry
         uses: actions/setup-node@v6
         with:
           node-version: '24'
           registry-url: 'https://registry.npmjs.org'
+          scope: '@scality'
 
       - name: Publish to npm with provenance
-        run: npm publish --provenance --tag latest
+        env:
+          VERSION: ${{ needs.build.outputs.version }}
+        run: |
+          if [ -n "$(npm view "@scality/cloudserverclient@$VERSION" version 2>/dev/null)" ]; then
+            echo "::notice::@scality/cloudserverclient@$VERSION already on npm; skipping"
+          else
+            npm publish *.tgz --provenance --tag latest
+          fi
 
   publish-github:
     name: Publish to GitHub Packages
     runs-on: ubuntu-24.04
     needs: build
     permissions:
-      contents: read
       packages: write
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v6
-
-      - name: Download build artifacts
+      - name: Download package artifact
         uses: actions/download-artifact@v7
         with:
-          name: build-artifacts
+          name: package
 
       - name: Setup Node.js for GitHub Packages
         uses: actions/setup-node@v6
         with:
           node-version: '24'
           registry-url: 'https://npm.pkg.github.com'
+          scope: '@scality'
 
       - name: Publish to GitHub Packages
-        run: npm publish --tag latest
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          VERSION: ${{ needs.build.outputs.version }}
+        run: |
+          if [ -n "$(npm view "@scality/cloudserverclient@$VERSION" version 2>/dev/null)" ]; then
+            echo "::notice::@scality/cloudserverclient@$VERSION already on GitHub Packages; skipping"
+          else
+            npm publish *.tgz --tag latest
+          fi
 
   create-release:
     name: Create GitHub Release
@@ -98,3 +155,7 @@ jobs:
           name: Release ${{ needs.build.outputs.version }}
           target_commitish: ${{ github.sha }}
           generate_release_notes: true
+          append_body: true
+          body: |
+            GitHub Packages: https://github.com/${{ github.repository }}/pkgs/npm/cloudserverclient
+            npm: https://www.npmjs.com/package/@scality/cloudserverclient
