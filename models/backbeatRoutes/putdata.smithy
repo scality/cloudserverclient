@@ -32,7 +32,7 @@ structure PutDataInput {
     @httpHeader("X-Scal-Request-Uids")
     RequestUids: String,
 
-    @httpHeader("x-scal-version-id")
+    @httpQuery("versionId")
     VersionId: String,
 
     @httpPayload
