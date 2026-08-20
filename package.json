@@ -28,7 +28,8 @@
   },
   "scripts": {
     "clean:build": "rm -rf build dist",
-    "build:smithy": "smithy build",
+    "build:smithy": "smithy build && yarn clean:codegen-gitignore",
+    "clean:codegen-gitignore": "rm -f build/smithy/*/typescript-codegen/.gitignore",
     "build:generated:backbeatRoutes": "cd build/smithy/cloudserverBackbeatRoutes/typescript-codegen && yarn install && yarn build",
     "build:generated:bucketQuota": "cd build/smithy/cloudserverBucketQuota/typescript-codegen && yarn install && yarn build",
     "build:generated:proxyBackbeatApis": "cd build/smithy/cloudserverProxyBackbeatApis/typescript-codegen && yarn install && yarn build",
