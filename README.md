@@ -15,7 +15,8 @@ yarn build
 ```
 
 The generated clients are shipped inside this package and load their dependencies from the root
-`package.json`, so any runtime dependency of a generated client must be declared there as well.
+`package.json`, so any runtime dependency of a generated client must be declared there as well
+(`yarn build` fails otherwise).
 `yarn check:package` packs the build and verifies it installs and loads in a clean consumer.
 
 ### Local testing
