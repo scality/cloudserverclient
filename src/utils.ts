@@ -1,5 +1,5 @@
 import { addExpectContinueMiddleware } from '@aws-sdk/middleware-expect-continue';
-import { MiddlewareStack, RequestHandler } from '@smithy/types';
+import { MiddlewareStack, RequestHandler, StreamCollector } from '@smithy/types';
 import { XMLParser } from 'fast-xml-parser';
 import {
     CloudserverBackbeatRoutesServiceException
@@ -82,71 +82,80 @@ export function addContentLengthMiddleware<TCommand>(
     return;
 }
 
-export function createCustomErrorMiddleware() {
+function parseXmlError(xml: string) {
+    try {
+        const result = new XMLParser({}).parse(xml);
+        return {
+            code: result.Error?.Code,
+            message: result.Error?.Message,
+            requestId: result.Error?.RequestId,
+        };
+    } catch (_parseError) {
+        return {
+            code: null,
+            message: 'Malformed XML error response',
+            requestId: null,
+        };
+    }
+}
+
+/**
+ * Turns XML and HTML error responses into service exceptions, as cloudserver
+ * and the S3C nginx proxy may return them regardless of the service protocol.
+ *
+ * Must run after (inside) the deserializer, on the raw HTTP response: errors
+ * thrown by the deserializer no longer carry the response body.
+ */
+export function createCustomErrorMiddleware(config: { streamCollector: StreamCollector }) {
     return (next: any) => async (args: any) => {
-        try {
-            return await next(args);
-        } catch (error: any) {
-            const parseXmlError = (xml: string) => {
-                try {
-                    const result = new XMLParser({}).parse(xml);
-                    return {
-                        code: result.Error?.Code,
-                        message: result.Error?.Message,
-                        requestId: result.Error?.RequestId,
-                    };
-                } catch (_parseError) {
-                    return {
-                        code: null,
-                        message: 'Malformed XML error response',
-                        requestId: null,
-                    };
-                }
-            };
-
-            const response = error.$response;
-            const statusCode = error.$metadata?.httpStatusCode;
-            const headers = response?.headers || {};
-            const contentType = (headers['content-type'] || '').toLowerCase();
-            if (contentType.includes('application/xml') || contentType.includes('text/xml')) {
-                const body = response?.body;
-                const xml = body?.toString() || '';
-                const errorInfo = parseXmlError(xml);
-                
-                const xmlError: any = new CloudserverBackbeatRoutesServiceException({
-                    name: errorInfo.code || error.name,
-                    message: errorInfo.message || 'XML error response',
-                    $fault: statusCode >= 500 ? 'server' : 'client',
-                    $metadata: error.$metadata || {},
-                    $response: error.$response,
-                });
-                xmlError.parsedXml = errorInfo;
-                xmlError.code = errorInfo.code;
-
-                throw xmlError;
-            }
-
-            const s3cNginxProxyResponse = contentType.includes('text/html');
-            if (s3cNginxProxyResponse) {
-                const body = response?.body;
-                const html = body?.toString() || '';
-                const title = html.match(/<title[^>]*>([^<]+)<\/title>/i);
-                const message = title && title[1] || 'HTML error response';
-
-                const htmlError: any = new CloudserverBackbeatRoutesServiceException({
-                    name: `HTML ${response?.reason || 'Error'}`,
-                    message,
-                    $fault: statusCode >= 500 ? 'server' : 'client',
-                    $metadata: error.$metadata || {},
-                    $response: error.$response,
-                });
-                htmlError.rawBody = html;
-                
-                throw htmlError;
-            }
-
-            throw error;
+        const result = await next(args);
+        const response = result?.response;
+        const statusCode = response?.statusCode;
+        if (!statusCode || statusCode < 300) {
+            return result;
         }
+
+        const headers = response.headers || {};
+        const contentType = (headers['content-type'] || '').toLowerCase();
+        const isXml = contentType.includes('application/xml') || contentType.includes('text/xml');
+        const s3cNginxProxyResponse = contentType.includes('text/html');
+        if (!isXml && !s3cNginxProxyResponse) {
+            return result;
+        }
+
+        const body = new TextDecoder().decode(await config.streamCollector(response.body));
+        response.body = body;
+        const $fault = statusCode >= 500 ? 'server' : 'client';
+        const $metadata = {
+            httpStatusCode: statusCode,
+            requestId: headers['x-amz-request-id'],
+            extendedRequestId: headers['x-amz-id-2'],
+        };
+
+        if (isXml) {
+            const errorInfo = parseXmlError(body);
+            const xmlError: any = new CloudserverBackbeatRoutesServiceException({
+                name: errorInfo.code || 'UnknownError',
+                message: errorInfo.message || 'XML error response',
+                $fault,
+                $metadata,
+            });
+            Object.defineProperty(xmlError, '$response', { value: response, enumerable: false });
+            xmlError.parsedXml = errorInfo;
+            xmlError.code = errorInfo.code;
+            throw xmlError;
+        }
+
+        const title = body.match(/<title[^>]*>([^<]+)<\/title>/i);
+        const htmlError: any = new CloudserverBackbeatRoutesServiceException({
+            name: `HTML ${response.reason || 'Error'}`,
+            message: title && title[1] || 'HTML error response',
+            $fault,
+            $metadata,
+        });
+        Object.defineProperty(htmlError, '$response', { value: response, enumerable: false });
+        htmlError.rawBody = body;
+        throw htmlError;
     };
 }
 

@@ -12,10 +12,10 @@ export class BackbeatRoutesClient extends CloudserverBackbeatRoutesClient {
             signingEscapePath: false,
         });
         
-        this.middlewareStack.add(createCustomErrorMiddleware(), {
+        this.middlewareStack.add(createCustomErrorMiddleware(this.config), {
             step: 'deserialize',
             name: 'cloudserverErrorHandler',
-            priority: 'normal',
+            priority: 'low',
         });
     }
 }
