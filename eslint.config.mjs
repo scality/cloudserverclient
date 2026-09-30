@@ -34,5 +34,13 @@ export default tseslint.config(
             }],
             '@typescript-eslint/ban-ts-comment': 'off',
         }
-    }
+    },
+    {
+        // Runs as a plain CommonJS consumer of the published package
+        files: ['tests/packaging/**/*.js'],
+        rules: {
+            '@typescript-eslint/no-require-imports': 'off',
+            'no-console': 'off',
+        },
+    },
 );

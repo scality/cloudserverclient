@@ -40,6 +40,7 @@
     "test:metadata-backend": "BACKEND_TYPE=metadata yarn test",
     "test:backbeat-apis": "BACKBEAT_SETUP=true yarn test -- tests/testBackbeatProxyApis.test.ts",
     "lint": "eslint src tests",
+    "check:package": "bash tests/packaging/check-package.sh",
     "typecheck": "tsc --noEmit"
   },
   "devDependencies": {
