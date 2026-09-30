@@ -14,6 +14,9 @@ The client generation is performed this way :
 yarn build
 ```
 
+The generated clients are shipped inside this package and load their dependencies from the root
+`package.json`, so any runtime dependency of a generated client must be declared there as well.
+
 ### Local testing
 
 1. Install dependencies & build the smithy client: `yarn build`
