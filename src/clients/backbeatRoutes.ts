@@ -1,21 +1,16 @@
-import { 
-    CloudserverBackbeatRoutesClient, 
+import {
+    CloudserverBackbeatRoutesClient,
     CloudserverBackbeatRoutesClientConfig,
 } from '../../build/smithy/cloudserverBackbeatRoutes/typescript-codegen';
-import { createCustomErrorMiddleware } from '../utils';
+import { CloudserverRestJsonProtocol } from '../utils';
 
 export * from '../../build/smithy/cloudserverBackbeatRoutes/typescript-codegen';
 export class BackbeatRoutesClient extends CloudserverBackbeatRoutesClient {
     constructor(config: CloudserverBackbeatRoutesClientConfig) {
         super({
+            protocol: CloudserverRestJsonProtocol,
             ...config,
             signingEscapePath: false,
-        });
-        
-        this.middlewareStack.add(createCustomErrorMiddleware(this.config), {
-            step: 'deserialize',
-            name: 'cloudserverErrorHandler',
-            priority: 'low',
         });
     }
 }

@@ -1,9 +1,16 @@
+import { AwsRestJsonProtocol } from '@aws-sdk/core/protocols';
 import { addExpectContinueMiddleware } from '@aws-sdk/middleware-expect-continue';
-import { MiddlewareStack, RequestHandler, StreamCollector } from '@smithy/types';
-import { XMLParser } from 'fast-xml-parser';
+import { collectBody } from '@smithy/core/protocols';
 import {
-    CloudserverBackbeatRoutesServiceException
-} from '../build/smithy/cloudserverBackbeatRoutes/typescript-codegen';
+    HandlerExecutionContext,
+    HttpResponse,
+    MetadataBearer,
+    MiddlewareStack,
+    OperationSchema,
+    RequestHandler,
+    SerdeFunctions,
+} from '@smithy/types';
+import { XMLParser } from 'fast-xml-parser';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type WithMiddlewareStack = { middlewareStack?: MiddlewareStack<any, any> };
@@ -82,81 +89,59 @@ export function addContentLengthMiddleware<TCommand>(
     return;
 }
 
-function parseXmlError(xml: string) {
+function parseXmlError(body: string) {
     try {
-        const result = new XMLParser({}).parse(xml);
+        const { Error: error } = new XMLParser({}).parse(body);
         return {
-            code: result.Error?.Code,
-            message: result.Error?.Message,
-            requestId: result.Error?.RequestId,
+            code: error?.Code || 'UnknownError',
+            message: error?.Message || 'XML error response',
         };
     } catch (_parseError) {
         return {
-            code: null,
+            code: 'UnknownError',
             message: 'Malformed XML error response',
-            requestId: null,
         };
     }
 }
 
-/**
- * Turns XML and HTML error responses into service exceptions, as cloudserver
- * and the S3C nginx proxy may return them regardless of the service protocol.
- *
- * Must run after (inside) the deserializer, on the raw HTTP response: errors
- * thrown by the deserializer no longer carry the response body.
- */
-export function createCustomErrorMiddleware(config: { streamCollector: StreamCollector }) {
-    return (next: any) => async (args: any) => {
-        const result = await next(args);
-        const response = result?.response;
-        const statusCode = response?.statusCode;
-        if (!statusCode || statusCode < 300) {
-            return result;
-        }
-
-        const headers = response.headers || {};
-        const contentType = (headers['content-type'] || '').toLowerCase();
-        const isXml = contentType.includes('application/xml') || contentType.includes('text/xml');
-        const s3cNginxProxyResponse = contentType.includes('text/html');
-        if (!isXml && !s3cNginxProxyResponse) {
-            return result;
-        }
-
-        const body = new TextDecoder().decode(await config.streamCollector(response.body));
-        response.body = body;
-        const $fault = statusCode >= 500 ? 'server' : 'client';
-        const $metadata = {
-            httpStatusCode: statusCode,
-            requestId: headers['x-amz-request-id'],
-            extendedRequestId: headers['x-amz-id-2'],
-        };
-
-        if (isXml) {
-            const errorInfo = parseXmlError(body);
-            const xmlError: any = new CloudserverBackbeatRoutesServiceException({
-                name: errorInfo.code || 'UnknownError',
-                message: errorInfo.message || 'XML error response',
-                $fault,
-                $metadata,
-            });
-            Object.defineProperty(xmlError, '$response', { value: response, enumerable: false });
-            xmlError.parsedXml = errorInfo;
-            xmlError.code = errorInfo.code;
-            throw xmlError;
-        }
-
-        const title = body.match(/<title[^>]*>([^<]+)<\/title>/i);
-        const htmlError: any = new CloudserverBackbeatRoutesServiceException({
-            name: `HTML ${response.reason || 'Error'}`,
-            message: title && title[1] || 'HTML error response',
-            $fault,
-            $metadata,
-        });
-        Object.defineProperty(htmlError, '$response', { value: response, enumerable: false });
-        htmlError.rawBody = body;
-        throw htmlError;
+function parseHtmlError(body: string, response: HttpResponse) {
+    const title = body.match(/<title[^>]*>([^<]+)<\/title>/i);
+    return {
+        code: `HTML ${response.reason || 'Error'}`,
+        message: title?.[1] || 'HTML error response',
+        rawBody: body,
     };
+}
+
+/**
+ * restJson1 protocol that also understands the XML and HTML error responses
+ * that cloudserver and the S3C nginx proxy may return regardless of the
+ * service protocol. These bodies would otherwise fail JSON parsing: they are
+ * parsed here and handed to the regular error handling, so they map to the
+ * modeled error classes or to the service base exception, like JSON errors.
+ */
+export class CloudserverRestJsonProtocol extends AwsRestJsonProtocol {
+    async deserializeResponse<Output extends MetadataBearer>(
+        operationSchema: OperationSchema,
+        context: HandlerExecutionContext & SerdeFunctions,
+        response: HttpResponse,
+    ): Promise<Output> {
+        if (response.statusCode >= 300) {
+            const contentType = String(response.headers['content-type'] || '').toLowerCase();
+            const isXml = contentType.includes('application/xml') || contentType.includes('text/xml');
+            const isHtml = contentType.includes('text/html');
+            if (isXml || isHtml) {
+                const body = (await collectBody(response.body, context)).transformToString();
+                // Keep the raw body readable on the error's $response
+                // eslint-disable-next-line no-param-reassign
+                response.body = body;
+                const errorData = isXml ? parseXmlError(body) : parseHtmlError(body, response);
+                return this.handleError(operationSchema, context, response, errorData,
+                    this.deserializeMetadata(response));
+            }
+        }
+        return super.deserializeResponse(operationSchema, context, response);
+    }
 }
 
 export function attachReqUids(s3req, uuid: string) {
