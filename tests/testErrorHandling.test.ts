@@ -1,7 +1,5 @@
 import { 
     BackbeatRoutesClient,
-    MultipleBackendDeleteObjectInput,
-    MultipleBackendDeleteObjectCommand,
     GetObjectInput,
     GetObjectCommand,
 } from '../src/index';
@@ -28,24 +26,6 @@ describeForMongoBackend('CloudServer test error handling', () => {
         } catch (err: any) {
             assert.strictEqual(err.name, 'NoSuchKey');            
             assert.strictEqual(err.message, 'The specified key does not exist.');            
-            assert.strictEqual(err.$metadata?.httpStatusCode, 404);
-        }
-    });
-
-    it.skip('should test html parsing', async () => {
-        // Run CloudServer with : S3VAULT=mem S3METADATA=mem S3DATA=mem REMOTE_MANAGEMENT_DISABLE=true yarn start
-        // Needs to tamper with Cloudserver response manually to return an html error
-        try {
-            const deleteInput: MultipleBackendDeleteObjectInput = {
-                Bucket: 'testConfig.bucketName',
-                Key: 'notAKey',
-                StorageClass: 'us-east-1',
-                StorageType: 'file'
-            };
-            const commandDelete = new MultipleBackendDeleteObjectCommand(deleteInput);
-            await backbeatRoutesClient.send(commandDelete);
-        } catch (err: any) {
-            assert.strictEqual(err.name, 'NoSuchKey');            
             assert.strictEqual(err.$metadata?.httpStatusCode, 404);
         }
     });

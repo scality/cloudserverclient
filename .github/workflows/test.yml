@@ -27,6 +27,9 @@ jobs:
       - name: Lint
         run: yarn lint
 
+      - name: Check npm package
+        run: yarn check:package
+
   test-mongodb-backend:
     name: Test with MongoDB backend
     runs-on: ubuntu-24.04

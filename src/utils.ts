@@ -1,9 +1,16 @@
+import { AwsRestJsonProtocol } from '@aws-sdk/core/protocols';
 import { addExpectContinueMiddleware } from '@aws-sdk/middleware-expect-continue';
-import { MiddlewareStack, RequestHandler } from '@smithy/types';
-import { XMLParser } from 'fast-xml-parser';
+import { collectBody } from '@smithy/core/protocols';
 import {
-    CloudserverBackbeatRoutesServiceException
-} from '../build/smithy/cloudserverBackbeatRoutes/typescript-codegen';
+    HandlerExecutionContext,
+    HttpResponse,
+    MetadataBearer,
+    MiddlewareStack,
+    OperationSchema,
+    RequestHandler,
+    SerdeFunctions,
+} from '@smithy/types';
+import { XMLParser } from 'fast-xml-parser';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type WithMiddlewareStack = { middlewareStack?: MiddlewareStack<any, any> };
@@ -82,72 +89,59 @@ export function addContentLengthMiddleware<TCommand>(
     return;
 }
 
-export function createCustomErrorMiddleware() {
-    return (next: any) => async (args: any) => {
-        try {
-            return await next(args);
-        } catch (error: any) {
-            const parseXmlError = (xml: string) => {
-                try {
-                    const result = new XMLParser({}).parse(xml);
-                    return {
-                        code: result.Error?.Code,
-                        message: result.Error?.Message,
-                        requestId: result.Error?.RequestId,
-                    };
-                } catch (_parseError) {
-                    return {
-                        code: null,
-                        message: 'Malformed XML error response',
-                        requestId: null,
-                    };
-                }
-            };
+function parseXmlError(body: string) {
+    try {
+        const { Error: error } = new XMLParser({}).parse(body);
+        return {
+            code: error?.Code || 'UnknownError',
+            message: error?.Message || 'XML error response',
+        };
+    } catch (_parseError) {
+        return {
+            code: 'UnknownError',
+            message: 'Malformed XML error response',
+        };
+    }
+}
 
-            const response = error.$response;
-            const statusCode = error.$metadata?.httpStatusCode;
-            const headers = response?.headers || {};
-            const contentType = (headers['content-type'] || '').toLowerCase();
-            if (contentType.includes('application/xml') || contentType.includes('text/xml')) {
-                const body = response?.body;
-                const xml = body?.toString() || '';
-                const errorInfo = parseXmlError(xml);
-                
-                const xmlError: any = new CloudserverBackbeatRoutesServiceException({
-                    name: errorInfo.code || error.name,
-                    message: errorInfo.message || 'XML error response',
-                    $fault: statusCode >= 500 ? 'server' : 'client',
-                    $metadata: error.$metadata || {},
-                    $response: error.$response,
-                });
-                xmlError.parsedXml = errorInfo;
-                xmlError.code = errorInfo.code;
-
-                throw xmlError;
-            }
-
-            const s3cNginxProxyResponse = contentType.includes('text/html');
-            if (s3cNginxProxyResponse) {
-                const body = response?.body;
-                const html = body?.toString() || '';
-                const title = html.match(/<title[^>]*>([^<]+)<\/title>/i);
-                const message = title && title[1] || 'HTML error response';
-
-                const htmlError: any = new CloudserverBackbeatRoutesServiceException({
-                    name: `HTML ${response?.reason || 'Error'}`,
-                    message,
-                    $fault: statusCode >= 500 ? 'server' : 'client',
-                    $metadata: error.$metadata || {},
-                    $response: error.$response,
-                });
-                htmlError.rawBody = html;
-                
-                throw htmlError;
-            }
-
-            throw error;
-        }
+function parseHtmlError(body: string, response: HttpResponse) {
+    const title = body.match(/<title[^>]*>([^<]+)<\/title>/i);
+    return {
+        code: `HTML ${response.reason || 'Error'}`,
+        message: title?.[1] || 'HTML error response',
+        rawBody: body,
     };
+}
+
+/**
+ * restJson1 protocol that also understands the XML and HTML error responses
+ * that cloudserver and the S3C nginx proxy may return regardless of the
+ * service protocol. These bodies would otherwise fail JSON parsing: they are
+ * parsed here and handed to the regular error handling, so they map to the
+ * modeled error classes or to the service base exception, like JSON errors.
+ */
+export class CloudserverRestJsonProtocol extends AwsRestJsonProtocol {
+    async deserializeResponse<Output extends MetadataBearer>(
+        operationSchema: OperationSchema,
+        context: HandlerExecutionContext & SerdeFunctions,
+        response: HttpResponse,
+    ): Promise<Output> {
+        if (response.statusCode >= 300) {
+            const contentType = String(response.headers['content-type'] || '').toLowerCase();
+            const isXml = contentType.includes('application/xml') || contentType.includes('text/xml');
+            const isHtml = contentType.includes('text/html');
+            if (isXml || isHtml) {
+                const body = (await collectBody(response.body, context)).transformToString();
+                // Keep the raw body readable on the error's $response
+                // eslint-disable-next-line no-param-reassign
+                response.body = body;
+                const errorData = isXml ? parseXmlError(body) : parseHtmlError(body, response);
+                return this.handleError(operationSchema, context, response, errorData,
+                    this.deserializeMetadata(response));
+            }
+        }
+        return super.deserializeResponse(operationSchema, context, response);
+    }
 }
 
 export function attachReqUids(s3req, uuid: string) {

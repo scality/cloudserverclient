@@ -66,6 +66,9 @@ jobs:
       - name: Pack tarball
         run: npm pack --ignore-scripts
 
+      - name: Check tarball
+        run: bash tests/packaging/check-package.sh *.tgz
+
       - name: Attest build provenance
         uses: actions/attest-build-provenance@v4
         with:
