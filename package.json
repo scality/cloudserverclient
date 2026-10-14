@@ -1,6 +1,6 @@
 {
   "name": "@scality/cloudserverclient",
-  "version": "1.0.13",
+  "version": "1.0.14-bnaas.1",
   "engines": {
     "node": ">=20"
   },
