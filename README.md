@@ -19,6 +19,19 @@ The generated clients are shipped inside this package and load their dependencie
 (`yarn build` fails otherwise).
 `yarn check:package` packs the build and verifies it installs and loads in a clean consumer.
 
+### Notification destinations
+
+`NotificationDestinationsClient` (also `CloudserverClient.notificationDestinations`) calls the
+bucket notification destination API at the service root: create, update, get, delete and list,
+with the destination name in the `name` query parameter and the destination as an XML body.
+Update replaces the whole destination, so it takes the same input as Create. Get and List return
+the type of the authentication but never its secrets. List pages with `MaxItems` and `Marker`,
+and returns `NextMarker` while `IsTruncated` is true.
+
+`isValidDestinationName` checks a name against the server rules (1 to 128 characters matching
+`destinationNamePattern`), for callers that want to fail before a request; the client itself
+sends any name as given. See `examples/notificationDestinations.ts`.
+
 ### Local testing
 
 1. Install dependencies & build the smithy client: `yarn build`
