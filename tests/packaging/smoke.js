@@ -6,6 +6,7 @@ const pkg = require('@scality/cloudserverclient');
 require('@scality/cloudserverclient/clients/backbeatRoutes');
 require('@scality/cloudserverclient/clients/bucketQuota');
 require('@scality/cloudserverclient/clients/proxyBackbeatApis');
+require('@scality/cloudserverclient/clients/notificationDestinations');
 
 const requests = [];
 const server = http.createServer((req, res) => {
@@ -26,7 +27,8 @@ server.listen(0, '127.0.0.1', async () => {
         await client.backbeatRoutes.send(new pkg.GetRaftIdCommand({ Bucket: 'bucket' }));
         await client.bucketQuota.send(new pkg.GetBucketQuotaCommand({ Bucket: 'bucket' }));
         await client.proxyBackbeatApis.send(new pkg.CheckConnectionCommand({}));
-        assert.strictEqual(requests.length, 3);
+        await client.notificationDestinations.send(new pkg.DeleteNotificationDestinationCommand({ Name: 'dest' }));
+        assert.strictEqual(requests.length, 4);
         console.log(`runtime OK: ${requests.join(', ')}`);
     } catch (err) {
         console.error(err);
