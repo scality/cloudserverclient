@@ -4,6 +4,7 @@ import { BackbeatRoutesClient, CloudserverBackbeatRoutesClientConfig } from '../
 import { S3Client, PutObjectCommand, CreateBucketCommand, PutBucketVersioningCommand } from '@aws-sdk/client-s3';
 import { AwsCredentialIdentity, AwsCredentialIdentityProvider } from '@aws-sdk/types';
 import { BucketQuotaClient } from '../src/clients/bucketQuota';
+import { NotificationDestinationsClient } from '../src/clients/notificationDestinations';
 import { ProxyBackbeatApisClient } from '../src/clients/proxyBackbeatApis';
 jest.setTimeout(30000);
 
@@ -82,12 +83,14 @@ async function initBucketForTests() {
 export function createTestClient(): {
     backbeatRoutesClient: BackbeatRoutesClient,
     bucketQuotaClient: BucketQuotaClient,
+    notificationDestinationsClient: NotificationDestinationsClient,
     proxyBackbeatApisClient: ProxyBackbeatApisClient,
     s3client: S3Client
     } {
     return {
         backbeatRoutesClient: new BackbeatRoutesClient(config),
         bucketQuotaClient: new BucketQuotaClient(config),
+        notificationDestinationsClient: new NotificationDestinationsClient(config),
         proxyBackbeatApisClient: new ProxyBackbeatApisClient(config),
         s3client,
     };
