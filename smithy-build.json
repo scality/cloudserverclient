@@ -34,6 +34,15 @@
                     "packageVersion": "1.0.0"
                 }
             }
+        },
+        "cloudserverNotificationDestinations": {
+            "plugins": {
+                "typescript-codegen": {
+                    "service": "cloudserver.notificationDestinations#CloudserverNotificationDestinations",
+                    "package": "@scality/cloudserverclient-notification-destinations",
+                    "packageVersion": "1.0.0"
+                }
+            }
         }
     }
 }
