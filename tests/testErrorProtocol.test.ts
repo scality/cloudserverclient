@@ -18,7 +18,6 @@ type CannedResponse = {
     body: string;
 };
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 async function expectError(request: Promise<unknown>): Promise<any> {
     try {
         await request;

@@ -12,7 +12,6 @@ import {
 } from '@smithy/types';
 import { XMLParser } from 'fast-xml-parser';
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type WithMiddlewareStack = { middlewareStack?: MiddlewareStack<any, any> };
 
 /**

@@ -6,9 +6,7 @@ export const USER_METADATA_PREFIX = 'x-amz-meta-';
 
  
 export function extendCommandWithExtraParametersMiddleware(query: string) {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     return (next: any) => async (args: any) => {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const request = args.request as any;
         if (request.query) {
             request.query.search = query;
@@ -21,7 +19,6 @@ export function extendCommandWithExtraParametersMiddleware(query: string) {
 
  
 export function overrideObjectAttributesHeaderMiddleware(headerName: string, attributes: string[]) {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     return (next: any) => async (args: any) => {
         const request = args.request;
         request.headers[headerName] = attributes.join(',');
@@ -30,7 +27,6 @@ export function overrideObjectAttributesHeaderMiddleware(headerName: string, att
 }
 
 export function captureResponseBodyMiddleware(captured: { xml: string }) {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     return (next: any) => async (args: any) => {
         const { response } = await next(args);
 
@@ -47,7 +43,6 @@ export function captureResponseBodyMiddleware(captured: { xml: string }) {
     };
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function extractUserMetadata(source: Record<string, any>, target: Record<string, string>): void {
     for (const [key, value] of Object.entries(source)) {
         if (key.startsWith(USER_METADATA_PREFIX)) {
@@ -58,7 +53,6 @@ export function extractUserMetadata(source: Record<string, any>, target: Record<
 }
 
 export function parseUserMetadataMiddleware(captured: { xml: string }) {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     return (next: any) => async (args: any) => {
         const result = await next(args);
         const parsed = new XMLParser().parse(captured.xml);
@@ -72,7 +66,6 @@ export function parseUserMetadataMiddleware(captured: { xml: string }) {
 
  
 export function parseListObjectsUserMetadataMiddleware(captured: { xml: string }) {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     return (next: any) => async (args: any) => {
         const result = await next(args);
         const parsed = new XMLParser({ isArray: name => name === 'Contents' }).parse(captured.xml);
