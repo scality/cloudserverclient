@@ -41,6 +41,7 @@
     "test:metadata-backend": "BACKEND_TYPE=metadata yarn test",
     "test:backbeat-apis": "BACKBEAT_SETUP=true yarn test -- tests/testBackbeatProxyApis.test.ts",
     "lint": "eslint src tests",
+    "lint_md": "mdlint $(git ls-files '*.md')",
     "prettier:check": "prettier --check .",
     "check:package": "bash tests/packaging/check-package.sh",
     "typecheck": "tsc --noEmit"
