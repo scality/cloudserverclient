@@ -1,8 +1,9 @@
+import { defineConfig } from 'eslint/config';
 import tseslint from 'typescript-eslint';
 import scality from '@scality/eslint-config-scality';
 import { jest } from '@scality/eslint-config-scality/testing';
 
-export default tseslint.config(
+export default defineConfig(
     {
         ignores: [
             '**/build/**',
@@ -13,7 +14,6 @@ export default tseslint.config(
         ],
     },
     ...scality,
-    ...tseslint.configs.recommended,
     {
         files: ['**/*.js'],
         languageOptions: {
@@ -21,6 +21,8 @@ export default tseslint.config(
         },
     },
     {
+        files: [tseslint.globs.ts],
+        extends: [tseslint.configs.recommended],
         rules: {
             '@typescript-eslint/no-explicit-any': 'off',
             '@typescript-eslint/no-unused-vars': ['error', { 
@@ -35,7 +37,6 @@ export default tseslint.config(
         // Runs as a plain CommonJS consumer of the published package
         files: ['tests/packaging/**/*.js'],
         rules: {
-            '@typescript-eslint/no-require-imports': 'off',
             'no-console': 'off',
         },
     },
