@@ -15,6 +15,12 @@ export default tseslint.config(
     ...scality,
     ...tseslint.configs.recommended,
     {
+        files: ['**/*.js'],
+        languageOptions: {
+            sourceType: 'commonjs',
+        },
+    },
+    {
         rules: {
             '@typescript-eslint/no-explicit-any': 'off',
             '@typescript-eslint/no-unused-vars': ['error', { 
