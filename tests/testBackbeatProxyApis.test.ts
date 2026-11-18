@@ -36,15 +36,15 @@ import { createTestClient, testConfig } from './testSetup';
 import { describeForBackbeatSetup } from './testHelpers';
 import assert from 'assert';
 
-// Note : these tests are relatively simple, as it's not straightforward to setup 
+// Note : these tests are relatively simple, as it's not straightforward to setup
 // backbeat with locations, and real pause/resume tests scenarios.
-// The tests in Zenko are also using these apis, and will represent an opportunity to 
+// The tests in Zenko are also using these apis, and will represent an opportunity to
 // test this client better : https://scality.atlassian.net/browse/ZENKO-5102
 describeForBackbeatSetup('CloudServer Check Status API Tests', () => {
     let proxyBackbeatApisClient: ProxyBackbeatApisClient;
 
     beforeAll(() => {
-        ({proxyBackbeatApisClient} = createTestClient());
+        ({ proxyBackbeatApisClient } = createTestClient());
     });
 
     it('should test checkConnection', async () => {
@@ -94,10 +94,10 @@ describeForBackbeatSetup('CloudServer Check Status API Tests', () => {
                 Key: testConfig.objectKey,
                 VersionId: testConfig.versionID,
                 StorageClass: 'STANDARD',
-            }
+            },
         ]);
         const cmd = new RetryFailedObjectsCommand({
-            Body: new TextEncoder().encode(bodyData)
+            Body: new TextEncoder().encode(bodyData),
         });
         const result = await proxyBackbeatApisClient.send(cmd);
         assert.strictEqual(result.$metadata.httpStatusCode, 200);
@@ -173,7 +173,7 @@ describeForBackbeatSetup('CloudServer Check Status API Tests', () => {
         const bodyData = JSON.stringify({ hours: 24 });
         const input: ScheduleSiteResumeCommandInput = {
             Site: 'zenko',
-            Body: new TextEncoder().encode(bodyData)
+            Body: new TextEncoder().encode(bodyData),
         };
         const cmd = new ScheduleSiteResumeCommand(input);
         const result = await proxyBackbeatApisClient.send(cmd);
@@ -185,7 +185,7 @@ describeForBackbeatSetup('CloudServer Check Status API Tests', () => {
         const bodyData = JSON.stringify({ hours: 24 });
         const input: ScheduleIngestionSiteResumeCommandInput = {
             Site: 'zenko',
-            Body: new TextEncoder().encode(bodyData)
+            Body: new TextEncoder().encode(bodyData),
         };
         const cmd = new ScheduleIngestionSiteResumeCommand(input);
         const result = await proxyBackbeatApisClient.send(cmd);

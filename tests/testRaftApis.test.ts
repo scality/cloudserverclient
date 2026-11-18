@@ -1,4 +1,4 @@
-import { 
+import {
     BackbeatRoutesClient,
     GetRaftIdInput,
     GetRaftIdCommand,
@@ -7,7 +7,7 @@ import {
     GetRaftLogInput,
     GetRaftLogCommand,
     GetBucketCseqInput,
-    GetBucketCseqCommand
+    GetBucketCseqCommand,
 } from '../src/index';
 import assert from 'assert';
 import { createTestClient, testConfig } from './testSetup';
@@ -19,7 +19,7 @@ describeForMetadataBackend('CloudServer Raft API Tests', () => {
     let backbeatRoutesClient: BackbeatRoutesClient;
 
     beforeAll(() => {
-        ({backbeatRoutesClient} = createTestClient());
+        ({ backbeatRoutesClient } = createTestClient());
     });
 
     it('should test GetRaftId API', async () => {
@@ -65,23 +65,23 @@ describeForMetadataBackend('CloudServer Raft API Tests', () => {
         };
         const getRaftLogCommand = new GetRaftLogCommand(getRaftLogInput);
         const raftLogData = await backbeatRoutesClient.send(getRaftLogCommand);
-        
+
         function getRaftLogStreaming(done: any) {
             const recordStream = new ListRecordStream();
             const body = raftLogData.Body as any;
-            
+
             recordStream.on('error', (err: any) => done(err));
-            
+
             const jsonResponse = JSONStream.parse('log.*');
             const headerParser = JSONStream.parse('info');
             body.pipe(jsonResponse);
             body.pipe(headerParser);
             jsonResponse.pipe(recordStream);
-            
+
             body.on('error', (err: any) => recordStream.emit('error', err));
             jsonResponse.on('error', (err: any) => recordStream.emit('error', err));
             headerParser.on('error', (err: any) => recordStream.emit('error', err));
-            
+
             headerParser.on('data', (info: any) => {
                 recordStream.removeAllListeners('error');
                 return done(null, {
@@ -89,12 +89,12 @@ describeForMetadataBackend('CloudServer Raft API Tests', () => {
                     log: recordStream,
                 });
             });
-            
+
             return undefined;
         }
-        
+
         const logStats = { nbLogRecordsRead: 0, nbLogEntriesRead: 0, hasMoreLog: false };
-        
+
         // Wrap the streaming in a Promise to make the test wait for completion
         await new Promise<void>((resolve, reject) => {
             getRaftLogStreaming((err: any, logRes: any) => {
@@ -103,7 +103,7 @@ describeForMetadataBackend('CloudServer Raft API Tests', () => {
                     reject(err);
                     return;
                 }
-                
+
                 logRes.log.on('data', (record: any) => {
                     logStats.nbLogRecordsRead += 1;
                     if (record.entries) {
@@ -112,12 +112,12 @@ describeForMetadataBackend('CloudServer Raft API Tests', () => {
                         });
                     }
                 });
-                
+
                 logRes.log.on('error', (err: any) => {
                     assert.fail(`Error reading raft log stream: ${err}`);
                     reject(err);
                 });
-                
+
                 logRes.log.on('end', () => {
                     assert.ok(logStats.nbLogRecordsRead > 0);
                     assert.ok(logStats.nbLogEntriesRead > 0);

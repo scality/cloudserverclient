@@ -9,7 +9,7 @@ import {
     BatchDeleteLocation,
     BatchDeleteInput,
     BatchDeleteCommand,
-    addContentLengthMiddleware
+    addContentLengthMiddleware,
 } from '../src/index';
 import { S3Client, GetObjectCommand as S3getCommand } from '@aws-sdk/client-s3';
 import { createTestClient, testConfig } from './testSetup';
@@ -21,7 +21,7 @@ describeForMetadataBackend('CloudServer Backbeat Routes API Tests', () => {
     let s3client: S3Client;
 
     beforeAll(() => {
-        ({backbeatRoutesClient, s3client} = createTestClient());
+        ({ backbeatRoutesClient, s3client } = createTestClient());
     });
 
     it('should test PutData', async () => {
@@ -37,14 +37,11 @@ describeForMetadataBackend('CloudServer Backbeat Routes API Tests', () => {
             CanonicalID: testConfig.canonicalID,
             ContentMD5: etag,
             Body: getData.Body,
-            VersioningRequired: true
+            VersioningRequired: true,
         };
 
         const command2 = new PutDataCommand(putInput);
-        addContentLengthMiddleware(
-            command2,
-            getData.ContentLength
-        );
+        addContentLengthMiddleware(command2, getData.ContentLength);
         const data = await backbeatRoutesClient.send(command2);
         const locationAny: any = data.Location as any;
         assert.ok(locationAny[0].key !== undefined);
@@ -81,8 +78,8 @@ describeForMetadataBackend('CloudServer Backbeat Routes API Tests', () => {
                 dataStoreName: 'mem',
                 key: 'aaaa1',
                 size: 8,
-                dataStoreVersionId: 'v1'
-            }
+                dataStoreVersionId: 'v1',
+            },
         ];
         const batchDeleteInput: BatchDeleteInput = {
             Bucket: testConfig.bucketName,
@@ -91,9 +88,9 @@ describeForMetadataBackend('CloudServer Backbeat Routes API Tests', () => {
             StorageClass: 'STANDARD',
             Tags: JSON.stringify({ somekey: 'test' }),
             ContentType: 'application/octet-stream',
-            Locations: locations
+            Locations: locations,
         };
-        
+
         const batchDeleteCommand = new BatchDeleteCommand(batchDeleteInput);
         const result = await backbeatRoutesClient.send(batchDeleteCommand);
         assert.strictEqual(result.$metadata.httpStatusCode, 200);

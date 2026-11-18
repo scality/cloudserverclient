@@ -25,10 +25,12 @@ export class GetObjectAttributesExtendedCommand extends GetObjectAttributesComma
         const captured = { xml: '' };
 
         this.middlewareStack.add(
-            overrideObjectAttributesHeaderMiddleware('x-amz-object-attributes', input.ObjectAttributes), {
+            overrideObjectAttributesHeaderMiddleware('x-amz-object-attributes', input.ObjectAttributes),
+            {
                 step: 'build',
                 name: 'overrideObjectAttributesHeader',
-            });
+            },
+        );
 
         this.middlewareStack.add(captureResponseBodyMiddleware(captured), {
             step: 'deserialize',

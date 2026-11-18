@@ -1,4 +1,4 @@
-import { 
+import {
     BackbeatRoutesClient,
     ListLifecycleCurrentsInput,
     ListLifecycleCurrentsCommand,
@@ -17,7 +17,7 @@ describeForMetadataBackend('CloudServer Lifecycle API Tests', () => {
     let backbeatRoutesClient: BackbeatRoutesClient;
 
     beforeAll(() => {
-        ({backbeatRoutesClient} = createTestClient());
+        ({ backbeatRoutesClient } = createTestClient());
     });
 
     it('should test ListLifecycleCurrents', async () => {

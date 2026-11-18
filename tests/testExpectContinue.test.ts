@@ -1,12 +1,7 @@
 import http, { Server } from 'http';
 import { AddressInfo } from 'net';
 import { promisify } from 'util';
-import {
-    BackbeatRoutesClient,
-    PutDataCommand,
-    GetObjectCommand,
-    attachExpectContinueMiddleware,
-} from '../src/index';
+import { BackbeatRoutesClient, PutDataCommand, GetObjectCommand, attachExpectContinueMiddleware } from '../src/index';
 
 jest.setTimeout(20000);
 
@@ -108,16 +103,19 @@ describe('Expect: 100-continue middleware on PutDataCommand', () => {
         captured = { headers: {}, body: Buffer.alloc(0), bodyArrivedBeforeContinueSent: false };
     });
 
-    const putData = (Body: Buffer) => client.send(attachExpectContinueMiddleware(
-        new PutDataCommand({
-            Bucket: 'bucket',
-            Key: 'obj',
-            ContentMD5: 'x',
-            CanonicalID: 'c',
-            Body,
-        }),
-        client.config.requestHandler,
-    ));
+    const putData = (Body: Buffer) =>
+        client.send(
+            attachExpectContinueMiddleware(
+                new PutDataCommand({
+                    Bucket: 'bucket',
+                    Key: 'obj',
+                    ContentMD5: 'x',
+                    CanonicalID: 'c',
+                    Body,
+                }),
+                client.config.requestHandler,
+            ),
+        );
 
     it('sets Expect and waits for 100 before streaming the body', async () => {
         const body = Buffer.from('hello-world');
@@ -130,37 +128,39 @@ describe('Expect: 100-continue middleware on PutDataCommand', () => {
     });
 
     it('does NOT set Expect on body-less commands (GetObject)', async () => {
-        await client
-            .send(new GetObjectCommand({ Bucket: 'bucket', Key: 'obj' }))
-            .catch(() => undefined);
+        await client.send(new GetObjectCommand({ Bucket: 'bucket', Key: 'obj' })).catch(() => undefined);
         expect(captured.headers.expect).toBeUndefined();
     });
 
     it('does NOT set Expect on PutData without attachExpectContinueMiddleware', async () => {
-        await client.send(new PutDataCommand({
-            Bucket: 'bucket',
-            Key: 'obj',
-            ContentMD5: 'x',
-            CanonicalID: 'c',
-            Body: Buffer.from('hello-world'),
-        }));
+        await client.send(
+            new PutDataCommand({
+                Bucket: 'bucket',
+                Key: 'obj',
+                ContentMD5: 'x',
+                CanonicalID: 'c',
+                Body: Buffer.from('hello-world'),
+            }),
+        );
         expect(captured.method).toBe('PUT');
         expect(captured.headers.expect).toBeUndefined();
     });
 
     it('honors a numeric expectContinueHeader threshold (below threshold => no header)', async () => {
         const body = Buffer.from('tiny');
-        await client.send(attachExpectContinueMiddleware(
-            new PutDataCommand({
-                Bucket: 'bucket',
-                Key: 'obj',
-                ContentMD5: 'x',
-                CanonicalID: 'c',
-                Body: body,
-            }),
-            client.config.requestHandler,
-            1024,
-        ));
+        await client.send(
+            attachExpectContinueMiddleware(
+                new PutDataCommand({
+                    Bucket: 'bucket',
+                    Key: 'obj',
+                    ContentMD5: 'x',
+                    CanonicalID: 'c',
+                    Body: body,
+                }),
+                client.config.requestHandler,
+                1024,
+            ),
+        );
         expect(captured.method).toBe('PUT');
         expect(captured.headers.expect).toBeUndefined();
         expect(captured.body.length).toBe(body.length);
@@ -168,17 +168,19 @@ describe('Expect: 100-continue middleware on PutDataCommand', () => {
 
     it('honors a numeric expectContinueHeader threshold (at/above threshold => header set)', async () => {
         const body = Buffer.alloc(1024, 'a');
-        await client.send(attachExpectContinueMiddleware(
-            new PutDataCommand({
-                Bucket: 'bucket',
-                Key: 'obj',
-                ContentMD5: 'x',
-                CanonicalID: 'c',
-                Body: body,
-            }),
-            client.config.requestHandler,
-            1024,
-        ));
+        await client.send(
+            attachExpectContinueMiddleware(
+                new PutDataCommand({
+                    Bucket: 'bucket',
+                    Key: 'obj',
+                    ContentMD5: 'x',
+                    CanonicalID: 'c',
+                    Body: body,
+                }),
+                client.config.requestHandler,
+                1024,
+            ),
+        );
         expect(captured.headers.expect).toBe('100-continue');
         expect(captured.body.length).toBe(body.length);
     });
@@ -186,13 +188,15 @@ describe('Expect: 100-continue middleware on PutDataCommand', () => {
     it('still uploads when the server sends an unsolicited 100-continue', async () => {
         unsolicitedContinue = true;
         const body = Buffer.from('hello-world');
-        await client.send(new PutDataCommand({
-            Bucket: 'bucket',
-            Key: 'obj',
-            ContentMD5: 'x',
-            CanonicalID: 'c',
-            Body: body,
-        }));
+        await client.send(
+            new PutDataCommand({
+                Bucket: 'bucket',
+                Key: 'obj',
+                ContentMD5: 'x',
+                CanonicalID: 'c',
+                Body: body,
+            }),
+        );
         expect(captured.method).toBe('PUT');
         expect(captured.headers.expect).toBeUndefined();
         expect(captured.body.length).toBe(body.length);
@@ -220,13 +224,14 @@ describe('Expect: 100-continue middleware on PutDataCommand', () => {
         expect(captured.body.length).toBe(body.length);
     });
 
-
     it('surfaces an early 4xx response without streaming the body', async () => {
         earlyReject = true;
         const body = Buffer.from('hello-world');
 
         const err = await putData(body).then(
-            () => { throw new Error('expected request to fail'); },
+            () => {
+                throw new Error('expected request to fail');
+            },
             (e: Error & { $metadata?: { httpStatusCode?: number } }) => e,
         );
 
@@ -236,5 +241,4 @@ describe('Expect: 100-continue middleware on PutDataCommand', () => {
         expect(captured.bodyArrivedBeforeContinueSent).toBe(false);
         expect(captured.body.length).toBe(0);
     });
-
 });

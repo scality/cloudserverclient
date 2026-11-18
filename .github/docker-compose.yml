@@ -6,7 +6,7 @@ services:
     image: ${MONGODB_IMAGE}
     command: mongod --replSet rs0 --port ${MONGODB_PORT} --bind_ip_all
     ports:
-      - "127.0.0.1:${MONGODB_PORT}:${MONGODB_PORT}"
+      - '127.0.0.1:${MONGODB_PORT}:${MONGODB_PORT}'
     healthcheck:
       test: echo 'db.runCommand("ping").ok' | mongo --port ${MONGODB_PORT} --quiet
       interval: 5s
@@ -25,7 +25,7 @@ services:
     command: >
       mongo --host mongodb:${MONGODB_PORT} --eval
       'rs.initiate({_id: "rs0", members: [{_id: 0, host: "mongodb:${MONGODB_PORT}"}]})'
-    restart: "no"
+    restart: 'no'
     profiles:
       - mongo
       - backbeat
@@ -36,7 +36,7 @@ services:
   cloudserver:
     image: ${CLOUDSERVER_IMAGE}
     ports:
-      - "127.0.0.1:${CLOUDSERVER_PORT}:${CLOUDSERVER_PORT}"
+      - '127.0.0.1:${CLOUDSERVER_PORT}:${CLOUDSERVER_PORT}'
     environment:
       - S3VAULT=mem
       - S3METADATA=mongodb
@@ -51,7 +51,11 @@ services:
       mongodb-init:
         condition: service_completed_successfully
     healthcheck:
-      test: ["CMD-SHELL", "node -e \"require('http').get('http://localhost:${CLOUDSERVER_PORT}/', r => process.exit(r.statusCode < 500 ? 0 : 1)).on('error', () => process.exit(1))\""]
+      test:
+        [
+          'CMD-SHELL',
+          'node -e "require(''http'').get(''http://localhost:${CLOUDSERVER_PORT}/'', r => process.exit(r.statusCode < 500 ? 0 : 1)).on(''error'', () => process.exit(1))"',
+        ]
       interval: 5s
       timeout: 5s
       retries: 12
@@ -82,7 +86,11 @@ services:
     depends_on:
       - metadata-standalone
     healthcheck:
-      test: ["CMD-SHELL", "node -e \"require('http').get('http://localhost:${CLOUDSERVER_PORT}/', r => process.exit(r.statusCode < 500 ? 0 : 1)).on('error', () => process.exit(1))\""]
+      test:
+        [
+          'CMD-SHELL',
+          'node -e "require(''http'').get(''http://localhost:${CLOUDSERVER_PORT}/'', r => process.exit(r.statusCode < 500 ? 0 : 1)).on(''error'', () => process.exit(1))"',
+        ]
       interval: 5s
       timeout: 5s
       retries: 12
@@ -95,9 +103,9 @@ services:
   zookeeper:
     image: ${ZOOKEEPER_IMAGE}
     ports:
-      - "127.0.0.1:${ZOOKEEPER_PORT}:${ZOOKEEPER_PORT}"
+      - '127.0.0.1:${ZOOKEEPER_PORT}:${ZOOKEEPER_PORT}'
     healthcheck:
-      test: ["CMD", "zkServer.sh", "status"]
+      test: ['CMD', 'zkServer.sh', 'status']
       interval: 10s
       timeout: 5s
       retries: 5
@@ -126,21 +134,21 @@ services:
         zkCli.sh -server zookeeper:${ZOOKEEPER_PORT} create /backbeat/replication/replayState '' &&
         echo 'Zookeeper paths initialized successfully'
       "
-    restart: "no"
+    restart: 'no'
     profiles:
       - backbeat
 
   redis:
     image: ${REDIS_IMAGE}
     ports:
-      - "127.0.0.1:${REDIS_PORT}:${REDIS_PORT}"
+      - '127.0.0.1:${REDIS_PORT}:${REDIS_PORT}'
     profiles:
       - backbeat
 
   kafka:
     image: ${KAFKA_IMAGE}
     ports:
-      - "127.0.0.1:${KAFKA_PORT}:${KAFKA_PORT}"
+      - '127.0.0.1:${KAFKA_PORT}:${KAFKA_PORT}'
     environment:
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:${ZOOKEEPER_PORT}
       KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:${KAFKA_PORT}
@@ -155,14 +163,14 @@ services:
   backbeat-api:
     image: ${BACKBEAT_IMAGE}
     ports:
-      - "127.0.0.1:${BACKBEAT_PORT}:${BACKBEAT_PORT}"
+      - '127.0.0.1:${BACKBEAT_PORT}:${BACKBEAT_PORT}'
     environment:
       ZOOKEEPER_CONNECTION_STRING: zookeeper:${ZOOKEEPER_PORT}
       REDIS_HOST: redis
       KAFKA_HOSTS: kafka:${KAFKA_PORT}
       MONGODB_HOSTS: mongodb:${MONGODB_PORT}
-      REMOTE_MANAGEMENT_DISABLE: "1"
-      HEALTHCHECKS_ALLOWFROM: "0.0.0.0/0"
+      REMOTE_MANAGEMENT_DISABLE: '1'
+      HEALTHCHECKS_ALLOWFROM: '0.0.0.0/0'
     depends_on:
       mongodb-init:
         condition: service_completed_successfully
@@ -173,7 +181,11 @@ services:
       redis:
         condition: service_started
     healthcheck:
-      test: ["CMD-SHELL", "node -e \"require('http').get('http://localhost:${BACKBEAT_PORT}/_/healthcheck', r => process.exit(r.statusCode === 200 ? 0 : 1)).on('error', () => process.exit(1))\""]
+      test:
+        [
+          'CMD-SHELL',
+          'node -e "require(''http'').get(''http://localhost:${BACKBEAT_PORT}/_/healthcheck'', r => process.exit(r.statusCode === 200 ? 0 : 1)).on(''error'', () => process.exit(1))"',
+        ]
       interval: 5s
       timeout: 5s
       retries: 12

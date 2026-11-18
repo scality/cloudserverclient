@@ -9,9 +9,9 @@ export class ListObjectsExtendedCommand extends ListObjectsCommand {
     constructor(input: ListObjectsExtendedInput) {
         super(input);
 
-        this.middlewareStack.add(
-            extendCommandWithExtraParametersMiddleware(input.Query),
-            { step: 'build', name: 'extendCommandWithExtraParameters' }
-        );
+        this.middlewareStack.add(extendCommandWithExtraParametersMiddleware(input.Query), {
+            step: 'build',
+            name: 'extendCommandWithExtraParameters',
+        });
     }
 }

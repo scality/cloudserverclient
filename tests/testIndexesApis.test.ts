@@ -1,4 +1,4 @@
-import { 
+import {
     BackbeatRoutesClient,
     GetBucketIndexesInput,
     GetBucketIndexesCommand,
@@ -15,19 +15,17 @@ describeForMongoBackend('CloudServer Indexes API Tests', () => {
     let backbeatRoutesClient: BackbeatRoutesClient;
 
     beforeAll(() => {
-        ({backbeatRoutesClient} = createTestClient());
+        ({ backbeatRoutesClient } = createTestClient());
     });
 
     it('should test PutBucketIndexes', async () => {
         const indexData = JSON.stringify([
             {
                 name: 'testIndex1',
-                keys: [
-                    { order: 1, key: 'metadata.userId' }
-                ]
-            }
+                keys: [{ order: 1, key: 'metadata.userId' }],
+            },
         ]);
-        
+
         const putBucketIndexesInput: PutBucketIndexesInput = {
             Bucket: testConfig.bucketName,
             Body: new TextEncoder().encode(indexData),
@@ -50,12 +48,10 @@ describeForMongoBackend('CloudServer Indexes API Tests', () => {
         const indexesToDelete = JSON.stringify([
             {
                 name: 'testIndex1',
-                keys: [
-                    { order: 1, key: 'metadata.userId' }
-                ]
-            }
+                keys: [{ order: 1, key: 'metadata.userId' }],
+            },
         ]);
-        
+
         const deleteBucketIndexesInput: DeleteBucketIndexesInput = {
             Bucket: testConfig.bucketName,
             Body: new TextEncoder().encode(indexesToDelete),

@@ -24,43 +24,41 @@ describe('SigV4 signing with special character keys', () => {
     const { backbeatRoutesClient, proxyBackbeatApisClient, s3client } = createTestClient();
 
     beforeAll(async () => {
-        await Promise.all(specialCharKeys.map(({ key }) =>
-            s3client.send(new PutObjectCommand({
-                Bucket: testConfig.bucketName,
-                Key: key,
-                Body: 'test',
-            })),
-        ));
+        await Promise.all(
+            specialCharKeys.map(({ key }) =>
+                s3client.send(
+                    new PutObjectCommand({
+                        Bucket: testConfig.bucketName,
+                        Key: key,
+                        Body: 'test',
+                    }),
+                ),
+            ),
+        );
     });
 
     describe('BackbeatRoutesClient', () => {
-        it.each(specialCharKeys)(
-            'should not double-encode $name in path',
-            async ({ key }) => {
-                const result = await backbeatRoutesClient.send(
-                    new GetMetadataCommand({
-                        Bucket: testConfig.bucketName,
-                        Key: key,
-                    }),
-                );
-                expect(result.Body).toBeDefined();
-            },
-        );
+        it.each(specialCharKeys)('should not double-encode $name in path', async ({ key }) => {
+            const result = await backbeatRoutesClient.send(
+                new GetMetadataCommand({
+                    Bucket: testConfig.bucketName,
+                    Key: key,
+                }),
+            );
+            expect(result.Body).toBeDefined();
+        });
     });
 
     describeForBackbeatSetup('ProxyBackbeatApisClient', () => {
-        it.each(specialCharKeys)(
-            'should not double-encode $name in path',
-            async ({ key }) => {
-                const result = await proxyBackbeatApisClient.send(
-                    new GetFailedObjectCommand({
-                        Bucket: testConfig.bucketName,
-                        Key: key,
-                        VersionId: testConfig.versionID,
-                    }),
-                );
-                expect(result.$metadata.httpStatusCode).toBe(200);
-            },
-        );
+        it.each(specialCharKeys)('should not double-encode $name in path', async ({ key }) => {
+            const result = await proxyBackbeatApisClient.send(
+                new GetFailedObjectCommand({
+                    Bucket: testConfig.bucketName,
+                    Key: key,
+                    VersionId: testConfig.versionID,
+                }),
+            );
+            expect(result.$metadata.httpStatusCode).toBe(200);
+        });
     });
 });

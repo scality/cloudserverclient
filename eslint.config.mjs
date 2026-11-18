@@ -5,11 +5,7 @@ import { jest } from '@scality/eslint-config-scality/testing';
 
 export default defineConfig(
     {
-        ignores: [
-            '**/build/**',
-            '**/dist/**',
-            '**/coverage/**',
-        ],
+        ignores: ['**/build/**', '**/dist/**', '**/coverage/**'],
     },
     ...scality,
     {
@@ -23,13 +19,16 @@ export default defineConfig(
         extends: [tseslint.configs.recommended],
         rules: {
             '@typescript-eslint/no-explicit-any': 'off',
-            '@typescript-eslint/no-unused-vars': ['error', { 
-                argsIgnorePattern: '^_',
-                varsIgnorePattern: '^_',
-                caughtErrorsIgnorePattern: '^_'
-            }],
+            '@typescript-eslint/no-unused-vars': [
+                'error',
+                {
+                    argsIgnorePattern: '^_',
+                    varsIgnorePattern: '^_',
+                    caughtErrorsIgnorePattern: '^_',
+                },
+            ],
             '@typescript-eslint/ban-ts-comment': 'off',
-        }
+        },
     },
     {
         // Runs as a plain CommonJS consumer of the published package

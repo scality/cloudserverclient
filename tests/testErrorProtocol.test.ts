@@ -64,8 +64,9 @@ describe('Cloudserver error responses', () => {
         cannedResponse = {
             status: 404,
             headers: { 'Content-Type': 'application/xml', 'x-amz-request-id': 'req-1' },
-            body: '<?xml version="1.0" encoding="UTF-8"?><Error><Code>NoSuchKey</Code>'
-                + '<Message>The specified key does not exist.</Message><RequestId>req-1</RequestId></Error>',
+            body:
+                '<?xml version="1.0" encoding="UTF-8"?><Error><Code>NoSuchKey</Code>' +
+                '<Message>The specified key does not exist.</Message><RequestId>req-1</RequestId></Error>',
         };
         const err = await expectError(client.send(new GetObjectCommand({ Bucket: 'bucket', Key: 'key' })));
 
@@ -82,14 +83,19 @@ describe('Cloudserver error responses', () => {
         cannedResponse = {
             status: 409,
             headers: { 'Content-Type': 'application/xml', 'x-scal-micro-version-id': 'mv-1' },
-            body: '<?xml version="1.0" encoding="UTF-8"?><Error><Code>StaleMicroVersionIdException</Code>'
-                + '<Message>incoming revision is older than destination</Message></Error>',
+            body:
+                '<?xml version="1.0" encoding="UTF-8"?><Error><Code>StaleMicroVersionIdException</Code>' +
+                '<Message>incoming revision is older than destination</Message></Error>',
         };
-        const err = await expectError(client.send(new PutMetadataCommand({
-            Bucket: 'bucket',
-            Key: 'key',
-            Body: Buffer.from('{}'),
-        })));
+        const err = await expectError(
+            client.send(
+                new PutMetadataCommand({
+                    Bucket: 'bucket',
+                    Key: 'key',
+                    Body: Buffer.from('{}'),
+                }),
+            ),
+        );
 
         expect(err.constructor).toBe(StaleMicroVersionIdException);
         expect(err.message).toBe('incoming revision is older than destination');
@@ -115,8 +121,9 @@ describe('Cloudserver error responses', () => {
         cannedResponse = {
             status: 400,
             headers: { 'Content-Type': 'text/html' },
-            body: '<html><head><title>400 Request Header Or Cookie Too Large</title></head>'
-                + '<body><center>Request Header Or Cookie Too Large</center></body></html>',
+            body:
+                '<html><head><title>400 Request Header Or Cookie Too Large</title></head>' +
+                '<body><center>Request Header Or Cookie Too Large</center></body></html>',
         };
         const err = await expectError(client.send(new GetObjectCommand({ Bucket: 'bucket', Key: 'key' })));
 
@@ -137,13 +144,17 @@ describe('Cloudserver error responses', () => {
                 message: 'version id already at destination',
             }),
         };
-        const err = await expectError(client.send(new PutDataCommand({
-            Bucket: 'bucket',
-            Key: 'key',
-            ContentMD5: 'x',
-            CanonicalID: 'c',
-            Body: Buffer.from('data'),
-        })));
+        const err = await expectError(
+            client.send(
+                new PutDataCommand({
+                    Bucket: 'bucket',
+                    Key: 'key',
+                    ContentMD5: 'x',
+                    CanonicalID: 'c',
+                    Body: Buffer.from('data'),
+                }),
+            ),
+        );
 
         expect(err.constructor).toBe(VersionIdCollisionException);
         expect(err.message).toBe('version id already at destination');

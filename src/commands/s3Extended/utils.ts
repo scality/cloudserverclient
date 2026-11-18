@@ -4,7 +4,6 @@ import { XMLParser } from 'fast-xml-parser';
 
 export const USER_METADATA_PREFIX = 'x-amz-meta-';
 
- 
 export function extendCommandWithExtraParametersMiddleware(query: string) {
     return (next: any) => async (args: any) => {
         const request = args.request as any;
@@ -17,7 +16,6 @@ export function extendCommandWithExtraParametersMiddleware(query: string) {
     };
 }
 
- 
 export function overrideObjectAttributesHeaderMiddleware(headerName: string, attributes: string[]) {
     return (next: any) => async (args: any) => {
         const request = args.request;
@@ -64,7 +62,6 @@ export function parseUserMetadataMiddleware(captured: { xml: string }) {
     };
 }
 
- 
 export function parseListObjectsUserMetadataMiddleware(captured: { xml: string }) {
     return (next: any) => async (args: any) => {
         const result = await next(args);

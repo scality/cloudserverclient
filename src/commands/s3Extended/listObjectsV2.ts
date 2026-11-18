@@ -30,21 +30,22 @@ export class ListObjectsV2ExtendedCommand extends ListObjectsV2Command {
         super(input);
 
         if (input.Query) {
-            this.middlewareStack.add(
-                extendCommandWithExtraParametersMiddleware(input.Query),
-                { step: 'build', name: 'extendCommandWithExtraParameters' }
-            );
+            this.middlewareStack.add(extendCommandWithExtraParametersMiddleware(input.Query), {
+                step: 'build',
+                name: 'extendCommandWithExtraParameters',
+            });
         }
 
         if (input.ObjectAttributes?.length) {
             const captured = { xml: '' };
 
             this.middlewareStack.add(
-                overrideObjectAttributesHeaderMiddleware(
-                    'x-amz-optional-object-attributes', input.ObjectAttributes), {
+                overrideObjectAttributesHeaderMiddleware('x-amz-optional-object-attributes', input.ObjectAttributes),
+                {
                     step: 'build',
                     name: 'overrideObjectAttributesHeader',
-                });
+                },
+            );
 
             this.middlewareStack.add(captureResponseBodyMiddleware(captured), {
                 step: 'deserialize',

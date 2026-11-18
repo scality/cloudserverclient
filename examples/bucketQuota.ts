@@ -1,7 +1,7 @@
 import {
     BucketQuotaClient,
     CloudserverBucketQuotaClientConfig,
-    GetBucketQuotaCommand
+    GetBucketQuotaCommand,
 } from '@scality/cloudserverclient/clients/bucketQuota';
 
 const config: CloudserverBucketQuotaClientConfig = {
@@ -19,7 +19,7 @@ try {
     const getBucketQuotaCommand = new GetBucketQuotaCommand({
         Bucket: 'aBucketName',
     });
-    
+
     const quotaData = await bucketQuotaClient.send(getBucketQuotaCommand);
     // {
     //     "$metadata": {

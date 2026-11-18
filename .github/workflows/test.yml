@@ -3,7 +3,7 @@ name: Test
 on:
   push:
     branches-ignore:
-    - 'development/**'
+      - 'development/**'
 
 permissions:
   contents: read
@@ -13,7 +13,7 @@ jobs:
   lint:
     name: Lint and typecheck
     runs-on: ubuntu-24.04
-    
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v6
@@ -40,7 +40,7 @@ jobs:
     name: Test with MongoDB backend
     runs-on: ubuntu-24.04
     needs: lint
-    
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v6
@@ -58,7 +58,7 @@ jobs:
     name: Test with Scality metadata backend
     runs-on: ubuntu-24.04
     needs: lint
-    
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v6
@@ -88,7 +88,7 @@ jobs:
     name: Test backbeat apis
     runs-on: ubuntu-24.04
     needs: lint
-    
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v6

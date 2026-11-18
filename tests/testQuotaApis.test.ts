@@ -1,4 +1,4 @@
-import { 
+import {
     BucketQuotaClient,
     GetBucketQuotaCommand,
     UpdateBucketQuotaCommand,
@@ -13,7 +13,7 @@ describeForMongoBackend('Quota API Tests', () => {
     const quotaValue = 12321;
 
     beforeAll(() => {
-        ({bucketQuotaClient} = createTestClient());
+        ({ bucketQuotaClient } = createTestClient());
     });
 
     it('should test Bucket quotas apis', async () => {
@@ -25,8 +25,8 @@ describeForMongoBackend('Quota API Tests', () => {
             assert.strictEqual(error.message, 'The specified resource does not have a quota.');
         }
 
-        await bucketQuotaClient.send(new UpdateBucketQuotaCommand(
-            { Bucket: testConfig.bucketName, Quota: quotaValue })
+        await bucketQuotaClient.send(
+            new UpdateBucketQuotaCommand({ Bucket: testConfig.bucketName, Quota: quotaValue }),
         );
 
         const getData = await bucketQuotaClient.send(new GetBucketQuotaCommand({ Bucket: testConfig.bucketName }));
@@ -44,15 +44,9 @@ describeForMongoBackend('Quota API Tests', () => {
     });
 
     it('should test Bucket quotas apis larger numbers', async () => {
-        const quotas = [
-            2_147_483_647,
-            2_147_483_647 + 1,
-            2**52,
-        ];
+        const quotas = [2_147_483_647, 2_147_483_647 + 1, 2 ** 52];
         for (const quota of quotas) {
-            await bucketQuotaClient.send(new UpdateBucketQuotaCommand(
-                { Bucket: testConfig.bucketName, Quota: quota })
-            );
+            await bucketQuotaClient.send(new UpdateBucketQuotaCommand({ Bucket: testConfig.bucketName, Quota: quota }));
 
             const getData = await bucketQuotaClient.send(new GetBucketQuotaCommand({ Bucket: testConfig.bucketName }));
             assert.strictEqual(getData.Quota, quota);

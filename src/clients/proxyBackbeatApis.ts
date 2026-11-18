@@ -1,5 +1,5 @@
-import { 
-    CloudserverProxyBackbeatApisClient, 
+import {
+    CloudserverProxyBackbeatApisClient,
     CloudserverProxyBackbeatApisClientConfig,
 } from '../../build/smithy/cloudserverProxyBackbeatApis/typescript-codegen';
 

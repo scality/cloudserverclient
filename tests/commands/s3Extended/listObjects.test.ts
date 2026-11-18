@@ -24,19 +24,19 @@ describeForMongoBackend('ListObjectsExtended', () => {
     });
 
     it('should test ListObjectsExtended', async () => {
-        const getCommand1= new ListObjectsExtendedCommand({
+        const getCommand1 = new ListObjectsExtendedCommand({
             Bucket: testConfig.bucketName,
             Query: `content-length >= ${testConfig.objectData.length}`,
-            MaxKeys: 5
+            MaxKeys: 5,
         });
         const getData1 = await s3client.send(getCommand1);
         assert.strictEqual(getData1.Contents?.length, 2);
 
         const maxKey = 1;
-        const getCommand2= new ListObjectsExtendedCommand({
+        const getCommand2 = new ListObjectsExtendedCommand({
             Bucket: testConfig.bucketName,
             Query: `content-length >= ${testConfig.objectData.length}`,
-            MaxKeys: maxKey
+            MaxKeys: maxKey,
         });
         const getData2 = await s3client.send(getCommand2);
         assert.strictEqual(getData2.Contents?.length, maxKey);
@@ -45,7 +45,7 @@ describeForMongoBackend('ListObjectsExtended', () => {
         const getCommand3 = new ListObjectsExtendedCommand({
             Bucket: testConfig.bucketName,
             Query: `content-length > ${testConfig.objectData.length}`,
-            MaxKeys: 5
+            MaxKeys: 5,
         });
         const getData3 = await s3client.send(getCommand3);
         assert.strictEqual(getData3.Contents?.length, 1);
@@ -54,7 +54,7 @@ describeForMongoBackend('ListObjectsExtended', () => {
         const getCommand4 = new ListObjectsExtendedCommand({
             Bucket: testConfig.bucketName,
             Query: `key = ${key2ndObject}`,
-            MaxKeys: 5
+            MaxKeys: 5,
         });
         const getData4 = await s3client.send(getCommand4);
         assert.strictEqual(getData4.Contents?.length, 1);
@@ -63,7 +63,7 @@ describeForMongoBackend('ListObjectsExtended', () => {
         const getCommand5 = new ListObjectsExtendedCommand({
             Bucket: testConfig.bucketName,
             Query: 'key = iDontExists',
-            MaxKeys: 5
+            MaxKeys: 5,
         });
         const getData5 = await s3client.send(getCommand5);
         assert.strictEqual(getData5.Contents, undefined);

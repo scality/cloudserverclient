@@ -1,4 +1,4 @@
-import { 
+import {
     BackbeatRoutesClient,
     GetMetadataInput,
     GetMetadataCommand,
@@ -15,7 +15,7 @@ describeForMetadataBackend('CloudServer Metadata API Tests', () => {
     let backbeatRoutesClient: BackbeatRoutesClient;
 
     beforeAll(() => {
-        ({backbeatRoutesClient} = createTestClient());
+        ({ backbeatRoutesClient } = createTestClient());
     });
 
     it('should test GetMetadata API', async () => {
@@ -36,23 +36,22 @@ describeForMetadataBackend('CloudServer Metadata API Tests', () => {
             'last-modified': new Date().toISOString(),
             'etag': '"d41d8cd98f00b204e9800998ecf8427e"',
             'x-amz-version-id': 'null',
-            'replicationInfo': {}
+            'replicationInfo': {},
         };
-        
+
         const metadataString = JSON.stringify(metadataObj);
         const metadataBuffer = new TextEncoder().encode(metadataString);
-        
+
         const putInput: PutMetadataInput = {
             Bucket: testConfig.bucketName,
             Key: testConfig.objectKey,
             Body: metadataBuffer,
         };
-        
+
         const command = new PutMetadataCommand(putInput);
         const result = await backbeatRoutesClient.send(command);
         assert.strictEqual(result.$metadata.httpStatusCode, 200);
     });
-
 
     it('should test GetBucketMetadata API', async () => {
         const getBucketMetadataInput: GetBucketMetadataInput = {
@@ -63,4 +62,3 @@ describeForMetadataBackend('CloudServer Metadata API Tests', () => {
         assert.strictEqual(bucketMetadata.name, testConfig.bucketName);
     });
 });
-

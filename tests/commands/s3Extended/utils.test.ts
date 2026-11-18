@@ -2,9 +2,14 @@ import { parseListObjectsUserMetadataMiddleware } from '../../../src/commands/s3
 
 describe('parseListObjectsUserMetadataMiddleware', () => {
     function buildXml(contents: Record<string, string>[]): string {
-        const inner = contents.map(obj => `<Contents>${
-            Object.entries(obj).map(([k, v]) => `<${k}>${v}</${k}>`).join('')
-        }</Contents>`).join('');
+        const inner = contents
+            .map(
+                obj =>
+                    `<Contents>${Object.entries(obj)
+                        .map(([k, v]) => `<${k}>${v}</${k}>`)
+                        .join('')}</Contents>`,
+            )
+            .join('');
         return `<ListBucketResult>${inner}</ListBucketResult>`;
     }
 
@@ -14,15 +19,15 @@ describe('parseListObjectsUserMetadataMiddleware', () => {
 
     it('should extract user metadata when XML contains a single Contents element', async () => {
         const captured = {
-            xml: buildXml([
-                { 'Key': 'obj1', 'x-amz-meta-foo': 'bar' },
-            ]),
+            xml: buildXml([{ 'Key': 'obj1', 'x-amz-meta-foo': 'bar' }]),
         };
 
         const middleware = parseListObjectsUserMetadataMiddleware(captured);
-        const result = await middleware(createNext({
-            Contents: [{ Key: 'obj1' }],
-        }))({ request: {} });
+        const result = await middleware(
+            createNext({
+                Contents: [{ Key: 'obj1' }],
+            }),
+        )({ request: {} });
         expect(result.output.Contents[0]['x-amz-meta-foo']).toBe('bar');
     });
 
@@ -35,9 +40,11 @@ describe('parseListObjectsUserMetadataMiddleware', () => {
         };
 
         const middleware = parseListObjectsUserMetadataMiddleware(captured);
-        const result = await middleware(createNext({
-            Contents: [{ Key: 'obj1' }, { Key: 'obj2' }],
-        }))({ request: {} });
+        const result = await middleware(
+            createNext({
+                Contents: [{ Key: 'obj1' }, { Key: 'obj2' }],
+            }),
+        )({ request: {} });
         expect(result.output.Contents[0]['x-amz-meta-foo']).toBe('bar');
         expect(result.output.Contents[1]['x-amz-meta-foo']).toBe('baz');
     });
@@ -48,9 +55,11 @@ describe('parseListObjectsUserMetadataMiddleware', () => {
         };
 
         const middleware = parseListObjectsUserMetadataMiddleware(captured);
-        const result = await middleware(createNext({
-            Contents: undefined,
-        }))({ request: {} });
+        const result = await middleware(
+            createNext({
+                Contents: undefined,
+            }),
+        )({ request: {} });
         expect(result.output.Contents).toBeUndefined();
     });
 });

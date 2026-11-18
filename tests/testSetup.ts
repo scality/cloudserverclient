@@ -27,7 +27,7 @@ const config: CloudserverBackbeatRoutesClientConfig = {
         }),
         connectionTimeout: 10000,
         requestTimeout: 30000,
-    }
+    },
 };
 
 const s3client = new S3Client({
@@ -37,10 +37,10 @@ const s3client = new S3Client({
     forcePathStyle: true,
     requestHandler: {
         httpsAgent: new https.Agent({
-            rejectUnauthorized: false
-        })
+            rejectUnauthorized: false,
+        }),
     },
-    maxAttempts: 1
+    maxAttempts: 1,
 });
 
 const randomId = () => Math.random().toString(36).substring(2, 8);
@@ -49,24 +49,24 @@ export const testConfig = {
     objectKey: `test-cloudserverclient-object-sla/sh${randomId()}`,
     objectData: 'iAmSomeData',
     canonicalID: '39383234313039353433383937313939393939395247303031202036353034352e30',
-    versionID: ''
+    versionID: '',
 };
 
 async function initBucketForTests() {
     try {
         const createBucketCommand = new CreateBucketCommand({
-            Bucket: testConfig.bucketName
+            Bucket: testConfig.bucketName,
         });
         await s3client.send(createBucketCommand);
 
         const versioningCommand = new PutBucketVersioningCommand({
             Bucket: testConfig.bucketName,
             VersioningConfiguration: {
-                Status: 'Enabled'
-            }
+                Status: 'Enabled',
+            },
         });
         await s3client.send(versioningCommand);
-        
+
         const putObjectCommand = new PutObjectCommand({
             Bucket: testConfig.bucketName,
             Key: testConfig.objectKey,
@@ -80,11 +80,11 @@ async function initBucketForTests() {
 }
 
 export function createTestClient(): {
-    backbeatRoutesClient: BackbeatRoutesClient,
-    bucketQuotaClient: BucketQuotaClient,
-    proxyBackbeatApisClient: ProxyBackbeatApisClient,
-    s3client: S3Client
-    } {
+    backbeatRoutesClient: BackbeatRoutesClient;
+    bucketQuotaClient: BucketQuotaClient;
+    proxyBackbeatApisClient: ProxyBackbeatApisClient;
+    s3client: S3Client;
+} {
     return {
         backbeatRoutesClient: new BackbeatRoutesClient(config),
         bucketQuotaClient: new BucketQuotaClient(config),

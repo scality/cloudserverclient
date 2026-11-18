@@ -2,11 +2,7 @@
 // In this library, you can either use individual clients (like BackbeatRoutesClient or BucketQuotaClient),
 // or use this global client.
 
-import { 
-    CloudserverClient, 
-    CloudserverClientConfig,
-    GetObjectCommand 
-} from '@scality/cloudserverclient';
+import { CloudserverClient, CloudserverClientConfig, GetObjectCommand } from '@scality/cloudserverclient';
 
 const command = new GetObjectCommand({
     Bucket: 'aBucketName',
