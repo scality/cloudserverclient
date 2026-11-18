@@ -70,9 +70,7 @@ describeForMetadataBackend('CloudServer Raft API Tests', () => {
             const recordStream = new ListRecordStream();
             const body = raftLogData.Body as any;
             
-            recordStream.on('error', (err: any) => {
-                return done(err);
-            });
+            recordStream.on('error', (err: any) => done(err));
             
             const jsonResponse = JSONStream.parse('log.*');
             const headerParser = JSONStream.parse('info');
@@ -102,7 +100,8 @@ describeForMetadataBackend('CloudServer Raft API Tests', () => {
             getRaftLogStreaming((err: any, logRes: any) => {
                 if (err) {
                     assert.fail(`Error initiating raft log stream: ${err}`);
-                    return reject(err);
+                    reject(err);
+                    return;
                 }
                 
                 logRes.log.on('data', (record: any) => {
