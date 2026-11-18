@@ -85,6 +85,9 @@ out
 build/
 dist/
 
+# Smithy CLI unpacked by the setup-smithy CI action
+smithy-install/
+
 # Gatsby files
 .cache/
 # Comment in the public line in if your project uses Gatsby and not Next.js
