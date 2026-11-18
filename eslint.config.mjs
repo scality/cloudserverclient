@@ -1,16 +1,6 @@
-import path from "node:path";
-import { fileURLToPath } from "node:url";
-import js from "@eslint/js";
-import { FlatCompat } from "@eslint/eslintrc";
 import tseslint from 'typescript-eslint';
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-const compat = new FlatCompat({
-    baseDirectory: __dirname,
-    recommendedConfig: js.configs.recommended,
-    allConfig: js.configs.all
-});
+import scality from '@scality/eslint-config-scality';
+import { jest } from '@scality/eslint-config-scality/testing';
 
 export default tseslint.config(
     {
@@ -22,7 +12,7 @@ export default tseslint.config(
             '**/coverage/**',
         ],
     },
-    ...compat.extends('@scality/scality'),
+    ...scality,
     ...tseslint.configs.recommended,
     {
         rules: {
@@ -43,4 +33,5 @@ export default tseslint.config(
             'no-console': 'off',
         },
     },
+    jest(['tests/**/*.ts']),
 );
