@@ -27,6 +27,9 @@ jobs:
       - name: Lint
         run: yarn lint --max-warnings 0
 
+      - name: Check formatting
+        run: yarn prettier:check
+
       - name: Check npm package
         run: yarn check:package
 

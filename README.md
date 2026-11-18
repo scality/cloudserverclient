@@ -34,3 +34,12 @@ In cloudserver, you can start metadata-standalone from
 - All tests: `yarn test`
 - From a specific file `yarn test testLifecycleApis`
 - A specific test `yarn test testLifecycleApis -t "should test ListLifecycleCurrents"`
+
+### Formatting
+
+Prettier formatting of the whole repository is checked in CI. Run it before
+pushing:
+
+```bash
+yarn run prettier --write .
+```
