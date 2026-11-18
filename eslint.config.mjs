@@ -8,8 +8,6 @@ export default defineConfig(
         ignores: [
             '**/build/**',
             '**/dist/**',
-            '**/node_modules/**',
-            '*.js',
             '**/coverage/**',
         ],
     },
@@ -38,6 +36,14 @@ export default defineConfig(
         files: ['tests/packaging/**/*.js'],
         rules: {
             'no-console': 'off',
+        },
+    },
+    {
+        // Documentation snippets: they print results, and assign some only to show what a call returns
+        files: ['examples/**'],
+        rules: {
+            'no-console': 'off',
+            '@typescript-eslint/no-unused-vars': 'off',
         },
     },
     jest(['tests/**/*.ts']),
